@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cherry Kins — Player</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="join-gate" class="landing">
+      <div class="landing-card">
+        <div class="landing-logo">Cherry Kins</div>
+        <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin<br />(not your access code)</p>
+        <div class="join-row">
+          <input
+            id="join-code"
+            maxlength="4"
+            placeholder="CODE"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            inputmode="text"
+          />
+          <button type="button" id="join-btn">Join</button>
+        </div>
+        <p class="hint" id="join-error"></p>
+        <p class="hint"><a href="index.html">← Back</a></p>
+      </div>
+    </div>
+
+    <div id="game" class="game" hidden>
+      <header class="header">
+        <div class="sync-pill" id="sync-pill">offline</div>
+        <div class="brand">Cherry Kins <span class="cherry" aria-hidden="true"></span></div>
+        <div class="clock" id="clock">0X:XX</div>
+      </header>
+
+      <aside class="side">
+        <div class="mugshot" id="mugshot">
+          <div class="placeholder" id="mug-placeholder">Mug shot</div>
+          <img id="mug-img" alt="" hidden />
+          <div class="name-tag" id="mug-name" hidden></div>
+        </div>
+        <div class="hearts" id="hearts" aria-label="Hearts"></div>
+        <div class="tix-box">
+          <div class="label">Tix</div>
+          <div class="value" id="tix">0</div>
+        </div>
+      </aside>
+
+      <div class="stage-wrap">
+        <div class="stage">
+          <div class="crowd" aria-hidden="true"></div>
+          <div class="character" id="character">
+            <div class="body" id="character-body"></div>
+          </div>
+          <div class="dialogue" id="dialogue"></div>
+        </div>
+        <div class="bar">
+          <button
+            class="menu-arrow"
+            id="menu-arrow"
+            type="button"
+            title="Open recipes"
+            aria-label="Open drink recipes"
+          >
+            <svg viewBox="0 0 36 28" fill="currentColor" aria-hidden="true">
+              <path d="M18 26 L2 4 H34 Z" />
+            </svg>
+          </button>
+          <button class="tablet" id="tablet" type="button" title="Recipes" aria-label="Recipes tablet"></button>
+        </div>
+      </div>
+
+      <section class="prep">
+        <div class="ice-bin">
+          <button class="stripe-can" id="stripe-can" type="button" data-ing="stripe">STR</button>
+          <button class="ice-tray" id="ice-tray" type="button" title="Add ice" aria-label="Add ice">
+            <span class="ice-cube"></span>
+            <span class="ice-cube"></span>
+            <span class="ice-cube"></span>
+            <span class="ice-cube"></span>
+            <span class="ice-cube"></span>
+            <span class="ice-cube"></span>
+          </button>
+        </div>
+
+        <div class="mixer">
+          <div class="shaker" aria-hidden="true"></div>
+          <div class="mix-tags" id="mix-tags"></div>
+        </div>
+
+        <div class="cans" id="cans"></div>
+
+        <div class="recipes" id="recipes" aria-hidden="true">
+          <div class="recipes-head">
+            <h2>RECIPES</h2>
+            <button class="recipes-close" id="recipes-close" type="button">Close</button>
+          </div>
+          <div class="recipe-list" id="recipe-list"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      if (sessionStorage.getItem("cherrykins_role") !== "player") {
+        location.replace("index.html");
+      }
+    </script>
+    <script src="js/recipes.js"></script>
+    <script src="js/sync.js"></script>
+    <script src="js/player.js"></script>
+  </body>
+</html>
