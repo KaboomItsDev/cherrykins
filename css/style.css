@@ -119,8 +119,7 @@ a {
   border: 2px solid var(--panel-line);
   color: var(--text);
   font-family: var(--font-display);
-  letter-spacing: 0.12em;
-  text-transform: lowercase;
+  letter-spacing: 0.08em;
   text-align: center;
   font-size: 1rem;
 }

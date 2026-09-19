@@ -10,21 +10,24 @@
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=4" />
+    <link rel="stylesheet" href="css/style.css?v=5" />
   </head>
   <body>
     <main class="landing">
       <div class="landing-card">
         <div class="landing-logo">Cherry Kins <span class="cherry" aria-hidden="true"></span></div>
         <p class="landing-sub">Enter your access code</p>
-        <p class="hint" style="margin-bottom: 1rem">build v4</p>
+        <p class="hint" style="margin-bottom: 1rem">build v5</p>
 
         <form class="access-form" id="access-form" autocomplete="off">
           <input
             id="access-code"
-            type="password"
-            placeholder="ACCESS CODE"
+            type="text"
+            placeholder="access code"
             spellcheck="false"
+            autocapitalize="off"
+            autocomplete="off"
+            autocorrect="off"
             autofocus
           />
           <button type="submit">Enter</button>
@@ -36,9 +39,29 @@
     <script>
       (function () {
         var CODES = {
-          falacias: { role: "player", href: "player.html" },
-          hiperboles: { role: "admin", href: "admin.html" },
+          falacias: "player.html",
+          hiperboles: "admin.html",
         };
+        var ROLES = {
+          falacias: "player",
+          hiperboles: "admin",
+        };
+
+        function clean(value) {
+          try {
+            return String(value || "")
+              .trim()
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .replace(/[^a-z]/g, "");
+          } catch (err) {
+            return String(value || "")
+              .trim()
+              .toLowerCase()
+              .replace(/[^a-z]/g, "");
+          }
+        }
 
         var form = document.getElementById("access-form");
         var input = document.getElementById("access-code");
@@ -46,19 +69,15 @@
 
         form.addEventListener("submit", function (e) {
           e.preventDefault();
-          var key = String(input.value || "")
-            .trim()
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-          var match = CODES[key];
-          if (!match) {
+          var key = clean(input.value);
+          if (!CODES[key]) {
             error.hidden = false;
+            error.textContent = "Wrong code.";
             input.select();
             return;
           }
-          sessionStorage.setItem("cherrykins_role", match.role);
-          location.href = match.href;
+          sessionStorage.setItem("cherrykins_role", ROLES[key]);
+          location.href = CODES[key];
         });
 
         input.addEventListener("input", function () {
