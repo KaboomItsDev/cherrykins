@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cherry Kins</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main class="landing">
+      <div class="landing-card">
+        <div class="landing-logo">Cherry Kins <span class="cherry" aria-hidden="true"></span></div>
+        <p class="landing-sub">Enter your access code</p>
+
+        <form class="access-form" id="access-form" autocomplete="off">
+          <input
+            id="access-code"
+            type="password"
+            placeholder="ACCESS CODE"
+            spellcheck="false"
+            autofocus
+          />
+          <button type="submit">Enter</button>
+        </form>
+        <p class="hint access-error" id="access-error" hidden>Wrong code.</p>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        var CODES = {
+          falacias: { role: "player", href: "player.html" },
+          hiperboles: { role: "admin", href: "admin.html" },
+        };
+
+        var form = document.getElementById("access-form");
+        var input = document.getElementById("access-code");
+        var error = document.getElementById("access-error");
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var key = String(input.value || "")
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+          var match = CODES[key];
+          if (!match) {
+            error.hidden = false;
+            input.select();
+            return;
+          }
+          sessionStorage.setItem("cherrykins_role", match.role);
+          location.href = match.href;
+        });
+
+        input.addEventListener("input", function () {
+          error.hidden = true;
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cherry Kins — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="admin">
+      <aside class="admin-rail">
+        <h1>Admin Panel</h1>
+        <div class="room-box">
+          <div class="meta">Room code — give this to the Player</div>
+          <div class="code" id="room-code">····</div>
+          <div class="meta" id="room-status">Starting…</div>
+        </div>
+
+        <div>
+          <h2>Character</h2>
+          <div class="char-pick" id="char-pick"></div>
+          <div class="btn-row" style="margin-top: 0.55rem">
+            <button class="btn primary" id="btn-enter" type="button">Slide in</button>
+            <button class="btn" id="btn-exit" type="button">Slide out</button>
+          </div>
+        </div>
+
+        <div>
+          <h2>Quick stats</h2>
+          <div class="field">
+            <label for="hearts">Hearts (0–3)</label>
+            <input id="hearts" type="number" min="0" max="3" value="3" />
+          </div>
+          <div class="field">
+            <label for="tix">Tix</label>
+            <input id="tix" type="number" min="0" value="0" />
+          </div>
+          <div class="field">
+            <label for="clock">Clock text</label>
+            <input id="clock" type="text" value="0X:XX" maxlength="8" />
+          </div>
+        </div>
+
+        <p class="hint"><a href="index.html">← Home</a></p>
+      </aside>
+
+      <main class="admin-main">
+        <h2>Expression (while you talk)</h2>
+        <div class="expr-grid" id="expr-grid"></div>
+
+        <div style="margin-top: 1.25rem">
+          <h2>Dialogue line</h2>
+          <div class="field">
+            <label for="dialogue">Shows under the character on the Player screen</label>
+            <textarea id="dialogue" placeholder="What they're saying…"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" id="btn-say" type="button">Send line</button>
+            <button class="btn" id="btn-clear-line" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div class="preview-note">
+          Tip: keep this panel open while you voice-chat. Tap expressions as the
+          mood shifts — the Player screen updates live. Add portrait / full-body
+          art under <code>assets/characters/&lt;id&gt;/&lt;expression&gt;.png</code>
+          and set the <code>src</code> paths in <code>js/recipes.js</code>.
+        </div>
+      </main>
+    </div>
+
+    <script>
+      if (sessionStorage.getItem("cherrykins_role") !== "admin") {
+        location.replace("index.html");
+      }
+    </script>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <script src="js/recipes.js"></script>
+    <script src="js/sync.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>
