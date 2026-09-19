@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Cherry Kins — Player</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=5" />
+    <link rel="stylesheet" href="css/style.css?v=6" />
   </head>
-  <body>
+  <body class="player-page">
     <div id="join-gate" class="landing">
       <div class="landing-card">
         <div class="landing-logo">Cherry Kins</div>
-        <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin<br />(not your access code)</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v5</p>
+        <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
+        <p class="hint" style="margin-bottom: 0.75rem">build v6</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div id="game" class="game" hidden>
+    <div id="game" class="game" style="display: none">
       <header class="header">
         <div class="sync-pill" id="sync-pill">offline</div>
         <div class="brand">Cherry Kins <span class="cherry" aria-hidden="true"></span></div>
@@ -115,8 +115,8 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=5"></script>
-    <script src="js/sync.js?v=5"></script>
-    <script src="js/player.js?v=5"></script>
+    <script src="js/recipes.js?v=6"></script>
+    <script src="js/sync.js?v=6"></script>
+    <script src="js/player.js?v=6"></script>
   </body>
 </html>

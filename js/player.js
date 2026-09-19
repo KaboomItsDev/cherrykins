@@ -135,6 +135,7 @@
   }
 
   function applyState(state) {
+    if (!state) return;
     clockEl.textContent = state.clock || "0X:XX";
     tixEl.textContent = String(state.tix ?? 0);
     renderHearts(Number(state.hearts) || 0);
@@ -184,10 +185,14 @@
     recipesEl.setAttribute("aria-hidden", open ? "false" : "true");
   }
 
+  /** Force the bar UI onto the phone — don't wait for sync. */
   function showGame() {
+    gate.style.display = "none";
     gate.hidden = true;
     game.hidden = false;
+    game.style.display = "grid";
     joinBtn.disabled = false;
+    document.body.classList.add("in-game");
     applyState(sync ? sync.getState() : window.CherrySync.DEFAULT_STATE);
   }
 
@@ -199,50 +204,33 @@
       sync = null;
     }
 
-    joinError.textContent = "Connecting…";
-    joinBtn.disabled = true;
+    const clean = window.CherrySync.normalizeCode(code);
+    joinInput.value = clean;
+    joinError.textContent = "Opening bar…";
 
-    sync = window.CherrySync.createSync("player", { code });
+    // ALWAYS open the game UI first (this was the phone stuck-screen bug)
+    showGame();
+    setSyncPill("connecting");
+
+    sync = window.CherrySync.createSync("player", { code: clean });
     sync.on((type, detail) => {
-      if (type === "status") {
-        setSyncPill(detail);
-        if (detail === "connected") {
-          joinError.textContent = "";
-          showGame();
-        }
-        if (detail === "connecting") {
-          joinError.textContent = "Connecting to Admin…";
-        }
-        if (detail === "waiting" || detail === "disconnected") {
-          // Still show the bar UI — sync can catch up
-          showGame();
-        }
-      }
-      if (type === "state") {
-        showGame();
-        applyState(detail);
-      }
-      if (type === "ready") {
-        showGame();
-      }
+      if (type === "status") setSyncPill(detail);
+      if (type === "state") applyState(detail);
       if (type === "error") {
-        // Don't block the UI — show the bar and keep the tip visible in the pill
-        showGame();
         setSyncPill("error");
         joinError.textContent = detail;
       }
+      if (type === "ready") setSyncPill(sync.getStatus());
     });
-
-    // Enter the game screen right away (concept UI), sync in the background
-    showGame();
-    setSyncPill("connecting");
     sync.start();
   }
 
   joinBtn.addEventListener("click", () => {
-    joinError.textContent = "";
     const code = window.CherrySync.normalizeCode(joinInput.value);
-    joinInput.value = code;
+    if (code.length !== 4) {
+      joinError.textContent = "Need the 4-letter code from Admin.";
+      return;
+    }
     startPlayer(code);
   });
   joinInput.addEventListener("keydown", (e) => {
@@ -255,7 +243,6 @@
   menuArrow.addEventListener("click", () => toggleRecipes());
   tablet.addEventListener("click", () => toggleRecipes());
   recipesClose.addEventListener("click", () => toggleRecipes(false));
-
   iceTray.addEventListener("click", () => addMix("ice"));
   stripeCan.addEventListener("click", () => addMix("stripe"));
 

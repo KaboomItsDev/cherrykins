@@ -1,6 +1,5 @@
 /**
  * Admin ↔ Player sync over public MQTT (no WebRTC).
- * Presence "connected" was lying before — data never reached the phone.
  */
 (function (global) {
   const DEFAULT_STATE = {
@@ -15,10 +14,9 @@
     mix: [],
   };
 
-  // Public brokers (first that connects wins)
   const BROKERS = [
-    "wss://broker.hivemq.com:8884/mqtt",
     "wss://broker.emqx.io:8084/mqtt",
+    "wss://broker.hivemq.com:8884/mqtt",
     "wss://test.mosquitto.org:8081",
   ];
 
@@ -68,8 +66,8 @@
         const client = mqttLib.connect(url, {
           clientId: "ck_" + Math.random().toString(16).slice(2, 10),
           clean: true,
-          connectTimeout: 8000,
-          reconnectPeriod: 2000,
+          connectTimeout: 10000,
+          reconnectPeriod: 2500,
         });
 
         const onConnect = () => {
@@ -85,7 +83,7 @@
             client.end(true);
           } catch (_) {}
           tryNext();
-        }, 9000);
+        }, 11000);
 
         function cleanup() {
           clearTimeout(timer);
@@ -131,13 +129,24 @@
       emit("state", { ...state });
     }
 
-    function publish(topic, payload) {
+    function publish(topic, payload, retain) {
       if (!client || !client.connected) return;
-      client.publish(topic, JSON.stringify(payload), { qos: 0, retain: topic === topicState });
+      client.publish(topic, JSON.stringify(payload), {
+        qos: 1,
+        retain: !!retain,
+      });
     }
 
     function broadcastState() {
-      publish(topicState, { _type: "state", from: role, state: { ...state }, t: Date.now() });
+      publish(
+        topicState,
+        { _type: "state", from: role, state: { ...state }, t: Date.now() },
+        true
+      );
+    }
+
+    function sendHello() {
+      publish(topicHello, { _type: "hello", from: "player", t: Date.now() }, false);
     }
 
     function setState(partial) {
@@ -145,7 +154,11 @@
       if (role === "admin") {
         broadcastState();
       } else {
-        publish(topicHello, { _type: "patch", from: "player", patch: partial, t: Date.now() });
+        publish(
+          topicHello,
+          { _type: "patch", from: "player", patch: partial, t: Date.now() },
+          false
+        );
       }
     }
 
@@ -157,7 +170,6 @@
         return;
       }
       if (!msg || typeof msg !== "object") return;
-      // Ignore our own echoes
       if (msg.from === role) return;
 
       lastPeerAt = Date.now();
@@ -170,6 +182,7 @@
 
       if (msg._type === "patch" && msg.patch && role === "admin") {
         applyLocal(msg.patch);
+        setStatus("connected");
         broadcastState();
         return;
       }
@@ -180,20 +193,29 @@
       }
     }
 
+    function subscribeReady() {
+      return new Promise((resolve, reject) => {
+        client.subscribe([topicState, topicHello], { qos: 1 }, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    }
+
     async function start() {
       if (role === "player") {
         code = normalizeCode(code);
         if (code.length !== 4) {
           setStatus("error");
-          emit("error", "Type the 4-letter sync code from the Admin screen (not falacias).");
+          emit("error", "Type the 4-letter sync code from the Admin screen.");
           return;
         }
       } else {
         code = roomCode();
       }
 
-      topicState = "cherrykins/v4/" + code + "/state";
-      topicHello = "cherrykins/v4/" + code + "/hello";
+      topicState = "cherrykins/v5/" + code + "/state";
+      topicHello = "cherrykins/v5/" + code + "/hello";
 
       setStatus("connecting");
       emit("code", code);
@@ -201,9 +223,10 @@
       try {
         const mqttLib = await loadMqtt();
         client = await connectBroker(mqttLib);
-
-        client.subscribe([topicState, topicHello], { qos: 0 });
         client.on("message", onMessage);
+
+        // Wait until subscribed BEFORE hello — otherwise phone misses Admin's reply
+        await subscribeReady();
 
         client.on("close", () => {
           if (status !== "idle") setStatus("disconnected");
@@ -212,12 +235,15 @@
           if (status !== "idle") setStatus("connecting");
         });
         client.on("reconnect", () => setStatus("connecting"));
-        client.on("connect", () => {
+        client.on("connect", async () => {
+          try {
+            await subscribeReady();
+          } catch (_) {}
           if (role === "admin") {
             setStatus(lastPeerAt ? "connected" : "waiting");
             broadcastState();
           } else {
-            publish(topicHello, { _type: "hello", from: "player", t: Date.now() });
+            sendHello();
           }
         });
 
@@ -225,23 +251,31 @@
           setStatus("waiting");
           broadcastState();
         } else {
-          publish(topicHello, { _type: "hello", from: "player", t: Date.now() });
+          sendHello();
+          // Keep pinging until we actually get state
+          let tries = 0;
+          const boot = setInterval(() => {
+            if (status === "connected" || tries++ > 20) {
+              clearInterval(boot);
+              return;
+            }
+            sendHello();
+          }, 1000);
         }
 
         if (heartbeat) clearInterval(heartbeat);
         heartbeat = setInterval(() => {
+          if (!client || !client.connected) return;
           if (role === "admin") {
             broadcastState();
-            if (lastPeerAt && Date.now() - lastPeerAt > 12000) {
-              setStatus("waiting");
-            }
+            if (lastPeerAt && Date.now() - lastPeerAt > 15000) setStatus("waiting");
           } else {
-            publish(topicHello, { _type: "hello", from: "player", t: Date.now() });
-            if (status === "connected" && lastPeerAt && Date.now() - lastPeerAt > 12000) {
+            sendHello();
+            if (status === "connected" && lastPeerAt && Date.now() - lastPeerAt > 15000) {
               setStatus("disconnected");
             }
           }
-        }, 2500);
+        }, 2000);
 
         emit("ready");
       } catch (err) {
