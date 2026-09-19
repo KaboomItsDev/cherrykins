@@ -8,15 +8,14 @@
   const heartsInput = document.getElementById("hearts");
   const tixInput = document.getElementById("tix");
   const clockInput = document.getElementById("clock");
-  const dialogueInput = document.getElementById("dialogue");
-  const btnSay = document.getElementById("btn-say");
-  const btnClearLine = document.getElementById("btn-clear-line");
   const previewChar = document.getElementById("preview-character");
   const previewBody = document.getElementById("preview-body");
-  const previewDialogue = document.getElementById("preview-dialogue");
 
   const chars = window.CHERRY_CHARACTERS || [];
   let selectedId = chars[0] ? chars[0].id : null;
+  let lastExprId = null;
+  let lastCharId = null;
+  let wasVisible = false;
 
   const sync = window.CherrySync.createSync("admin");
 
@@ -41,6 +40,18 @@
     return char.expressions.find((e) => e.id === exprId) || char.expressions[0] || null;
   }
 
+  function playExprAnim(el, exprId) {
+    el.classList.remove("anim-jump", "anim-tremble");
+    void el.offsetWidth;
+    if (exprId === "annoyed") el.classList.add("anim-tremble");
+    else el.classList.add("anim-jump");
+    const clear = () => {
+      el.classList.remove("anim-jump", "anim-tremble");
+      el.removeEventListener("animationend", clear);
+    };
+    el.addEventListener("animationend", clear);
+  }
+
   function push(partial) {
     sync.setState(partial);
     renderPreview(sync.getState());
@@ -49,12 +60,14 @@
   function renderPreview(state) {
     const char = chars.find((c) => c.id === state.characterId) || selectedChar();
     const expr = findExpr(char, state.expressionId);
+    const visible = !!(state.characterVisible && char);
+    const exprChanged =
+      visible &&
+      wasVisible &&
+      (state.expressionId !== lastExprId || state.characterId !== lastCharId);
 
-    if (state.characterVisible && char) {
-      previewChar.classList.add("in");
-    } else {
-      previewChar.classList.remove("in");
-    }
+    if (visible) previewChar.classList.add("in");
+    else previewChar.classList.remove("in");
 
     previewBody.innerHTML = "";
     if (char) {
@@ -75,13 +88,11 @@
       }
     }
 
-    if (state.dialogue && String(state.dialogue).trim()) {
-      previewDialogue.textContent = state.dialogue;
-      previewDialogue.classList.add("show");
-    } else {
-      previewDialogue.classList.remove("show");
-      previewDialogue.textContent = "";
-    }
+    if (exprChanged && visible) playExprAnim(previewBody, state.expressionId);
+
+    wasVisible = visible;
+    lastExprId = state.expressionId;
+    lastCharId = state.characterId;
   }
 
   function renderChars() {
@@ -155,7 +166,7 @@
   });
 
   btnExit.addEventListener("click", () => {
-    push({ characterVisible: false, dialogue: "" });
+    push({ characterVisible: false });
   });
 
   heartsInput.addEventListener("change", () => {
@@ -176,15 +187,6 @@
 
   clockInput.addEventListener("change", () => {
     push({ clock: clockInput.value || "0X:XX" });
-  });
-
-  btnSay.addEventListener("click", () => {
-    push({ dialogue: dialogueInput.value });
-  });
-
-  btnClearLine.addEventListener("click", () => {
-    dialogueInput.value = "";
-    push({ dialogue: "" });
   });
 
   window.addEventListener("keydown", (e) => {

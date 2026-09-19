@@ -7,15 +7,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
+      href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=6" />
+    <link rel="stylesheet" href="css/style.css?v=7" />
   </head>
   <body>
     <div class="admin">
       <aside class="admin-rail">
-        <h1>Admin Panel <span style="color:var(--muted);font-size:0.7rem">v6</span></h1>
+        <h1>Admin Panel <span style="color:var(--muted);font-size:0.7rem">v7</span></h1>
         <div class="room-box">
           <div class="meta">Sync code — Player types this (4 letters)</div>
           <div class="code" id="room-code">····</div>
@@ -37,17 +37,6 @@
         </div>
 
         <div>
-          <h2>Dialogue</h2>
-          <div class="field">
-            <textarea id="dialogue" placeholder="What they're saying…"></textarea>
-          </div>
-          <div class="btn-row">
-            <button class="btn primary" id="btn-say" type="button">Send line</button>
-            <button class="btn" id="btn-clear-line" type="button">Clear</button>
-          </div>
-        </div>
-
-        <div>
           <h2>Stats</h2>
           <div class="field">
             <label for="hearts">Hearts (0–3)</label>
@@ -63,7 +52,7 @@
           </div>
         </div>
 
-        <p class="hint"><a href="index.html">← Home</a> · Keys 1–5 expr · I in · O out</p>
+        <p class="hint"><a href="index.html">← Home</a> · Keys 1–6 expr · I in · O out</p>
       </aside>
 
       <main class="admin-main">
@@ -74,7 +63,6 @@
             <div class="character" id="preview-character">
               <div class="body" id="preview-body"></div>
             </div>
-            <div class="dialogue" id="preview-dialogue"></div>
           </div>
           <div class="preview-bar">
             <div class="tablet" aria-hidden="true"></div>
@@ -89,8 +77,8 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=6"></script>
-    <script src="js/sync.js?v=6"></script>
-    <script src="js/admin.js?v=6"></script>
+    <script src="js/recipes.js?v=7"></script>
+    <script src="js/sync.js?v=7"></script>
+    <script src="js/admin.js?v=7"></script>
   </body>
 </html>

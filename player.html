@@ -7,17 +7,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
+      href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=6" />
+    <link rel="stylesheet" href="css/style.css?v=7" />
   </head>
   <body class="player-page">
     <div id="join-gate" class="landing">
       <div class="landing-card">
         <div class="landing-logo">Cherry Kins</div>
         <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v6</p>
+        <p class="hint" style="margin-bottom: 0.75rem">build v7</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -38,21 +38,24 @@
 
     <div id="game" class="game" style="display: none">
       <header class="header">
-        <div class="sync-pill" id="sync-pill">offline</div>
         <div class="brand">Cherry Kins <span class="cherry" aria-hidden="true"></span></div>
         <div class="clock" id="clock">0X:XX</div>
       </header>
 
       <aside class="side">
-        <div class="mugshot" id="mugshot">
-          <div class="placeholder" id="mug-placeholder">Mug shot</div>
-          <img id="mug-img" alt="" hidden />
-          <div class="name-tag" id="mug-name" hidden></div>
+        <div class="mugshot-wrap">
+          <div class="mugshot" id="mugshot">
+            <div class="placeholder" id="mug-placeholder">Mug shot</div>
+            <img id="mug-img" alt="" hidden />
+          </div>
+          <div class="mug-name" id="mug-name"></div>
         </div>
         <div class="hearts" id="hearts" aria-label="Hearts"></div>
-        <div class="tix-box">
-          <div class="label">Tix</div>
-          <div class="value" id="tix">0</div>
+        <div class="tix-wrap">
+          <div class="tix-label">Tix</div>
+          <div class="tix-box">
+            <span class="value" id="tix">0</span>
+          </div>
         </div>
       </aside>
 
@@ -62,7 +65,6 @@
           <div class="character" id="character">
             <div class="body" id="character-body"></div>
           </div>
-          <div class="dialogue" id="dialogue"></div>
         </div>
         <div class="bar">
           <button
@@ -115,8 +117,8 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=6"></script>
-    <script src="js/sync.js?v=6"></script>
-    <script src="js/player.js?v=6"></script>
+    <script src="js/recipes.js?v=7"></script>
+    <script src="js/sync.js?v=7"></script>
+    <script src="js/player.js?v=7"></script>
   </body>
 </html>

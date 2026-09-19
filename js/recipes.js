@@ -1,4 +1,4 @@
-/** Drink recipes shown in the tablet menu. Swap art later via assets/ingredients. */
+/** Drink recipes shown in the tablet menu. */
 window.CHERRY_RECIPES = [
   {
     id: "pink-signal",
@@ -32,56 +32,36 @@ window.CHERRY_RECIPES = [
   },
 ];
 
-/** Ingredient cans on the prep station (placeholders until assets arrive). */
 window.CHERRY_INGREDIENTS = [
-  { id: "syrup", label: "SYR", color: "#e8a020" },
-  { id: "herb", label: "HRB", color: "#5cb85c" },
-  { id: "spark", label: "SPK", color: "#3ecfcf" },
-  { id: "bitter", label: "BTR", color: "#2a5a9e" },
-  { id: "stripe", label: "STR", color: "#c0392b", stripe: true },
+  { id: "syrup", label: "SYR", color: "#c48a20" },
+  { id: "herb", label: "HRB", color: "#4a8a4a" },
+  { id: "spark", label: "SPK", color: "#3a9aaa" },
+  { id: "bitter", label: "BTR", color: "#2a4a7a" },
+  { id: "stripe", label: "STR", color: "#a03030", stripe: true },
 ];
 
+/** Shared expression list for every character. */
+window.CHERRY_EXPRESSIONS = [
+  { id: "neutral", label: "Neutral", src: "" },
+  { id: "happy", label: "Happy", src: "" },
+  { id: "sad", label: "Sad", src: "" },
+  { id: "annoyed", label: "Annoyed", src: "" },
+  { id: "surprised", label: "Surprised", src: "" },
+  { id: "smirky", label: "Smirky", src: "" },
+];
+
+function cherryExprs() {
+  return window.CHERRY_EXPRESSIONS.map(function (e) {
+    return { id: e.id, label: e.label, src: e.src };
+  });
+}
+
 /**
- * Characters + expressions.
- * Put real images in assets/characters/ like:
- *   assets/characters/patron_a/neutral.png
- * Leave src empty to use color placeholders.
+ * Characters. Put art in assets/characters/<id>/<expression>.png
+ * and set src on CHERRY_EXPRESSIONS or per-character overrides later.
  */
 window.CHERRY_CHARACTERS = [
-  {
-    id: "patron_a",
-    name: "Patron A",
-    color: "#c45c8a",
-    expressions: [
-      { id: "neutral", label: "Neutral", src: "" },
-      { id: "happy", label: "Happy", src: "" },
-      { id: "annoyed", label: "Annoyed", src: "" },
-      { id: "surprised", label: "Surprised", src: "" },
-      { id: "sad", label: "Sad", src: "" },
-    ],
-  },
-  {
-    id: "patron_b",
-    name: "Patron B",
-    color: "#4a8fc8",
-    expressions: [
-      { id: "neutral", label: "Neutral", src: "" },
-      { id: "happy", label: "Happy", src: "" },
-      { id: "annoyed", label: "Annoyed", src: "" },
-      { id: "smirk", label: "Smirk", src: "" },
-      { id: "tired", label: "Tired", src: "" },
-    ],
-  },
-  {
-    id: "patron_c",
-    name: "Patron C",
-    color: "#7d5bb8",
-    expressions: [
-      { id: "neutral", label: "Neutral", src: "" },
-      { id: "happy", label: "Happy", src: "" },
-      { id: "angry", label: "Angry", src: "" },
-      { id: "laugh", label: "Laugh", src: "" },
-      { id: "shy", label: "Shy", src: "" },
-    ],
-  },
+  { id: "patron_a", name: "Patron A", color: "#a05070", expressions: cherryExprs() },
+  { id: "patron_b", name: "Patron B", color: "#406890", expressions: cherryExprs() },
+  { id: "patron_c", name: "Patron C", color: "#6850a0", expressions: cherryExprs() },
 ];

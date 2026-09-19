@@ -10,7 +10,6 @@
     hearts: 3,
     tix: 0,
     clock: "0X:XX",
-    dialogue: "",
     mix: [],
   };
 

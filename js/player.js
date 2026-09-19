@@ -5,7 +5,6 @@
   const joinInput = document.getElementById("join-code");
   const joinBtn = document.getElementById("join-btn");
   const joinError = document.getElementById("join-error");
-  const syncPill = document.getElementById("sync-pill");
   const clockEl = document.getElementById("clock");
   const heartsEl = document.getElementById("hearts");
   const tixEl = document.getElementById("tix");
@@ -14,7 +13,6 @@
   const mugName = document.getElementById("mug-name");
   const character = document.getElementById("character");
   const characterBody = document.getElementById("character-body");
-  const dialogueEl = document.getElementById("dialogue");
   const cansEl = document.getElementById("cans");
   const mixTags = document.getElementById("mix-tags");
   const recipesEl = document.getElementById("recipes");
@@ -27,6 +25,9 @@
 
   let sync = null;
   let mix = [];
+  let lastExprId = null;
+  let lastCharId = null;
+  let wasVisible = false;
 
   function findChar(id) {
     return (window.CHERRY_CHARACTERS || []).find((c) => c.id === id) || null;
@@ -37,19 +38,20 @@
     return char.expressions.find((e) => e.id === exprId) || char.expressions[0] || null;
   }
 
-  function setSyncPill(status) {
-    syncPill.className = "sync-pill";
-    const map = {
-      connected: ["ok", "synced"],
-      waiting: ["wait", "waiting"],
-      connecting: ["wait", "connecting…"],
-      disconnected: ["bad", "disconnected"],
-      error: ["bad", "error"],
-      idle: ["", "offline"],
+  function playExprAnim(exprId) {
+    const el = characterBody;
+    el.classList.remove("anim-jump", "anim-tremble");
+    void el.offsetWidth;
+    if (exprId === "annoyed") {
+      el.classList.add("anim-tremble");
+    } else {
+      el.classList.add("anim-jump");
+    }
+    const clear = () => {
+      el.classList.remove("anim-jump", "anim-tremble");
+      el.removeEventListener("animationend", clear);
     };
-    const [cls, label] = map[status] || map.idle;
-    if (cls) syncPill.classList.add(cls);
-    syncPill.textContent = label;
+    el.addEventListener("animationend", clear);
   }
 
   function renderHearts(n) {
@@ -64,15 +66,26 @@
   function renderCharacter(state) {
     const char = findChar(state.characterId);
     const expr = findExpr(char, state.expressionId);
+    const visible = !!(state.characterVisible && char);
+    const exprChanged =
+      visible &&
+      wasVisible &&
+      (state.expressionId !== lastExprId || state.characterId !== lastCharId);
 
-    if (state.characterVisible && char) {
+    if (visible) {
       character.classList.add("in");
     } else {
       character.classList.remove("in");
     }
 
     characterBody.innerHTML = "";
-    if (!char) return;
+    if (!char) {
+      wasVisible = false;
+      lastExprId = null;
+      lastCharId = null;
+      mugName.textContent = "";
+      return;
+    }
 
     if (expr && expr.src) {
       const img = document.createElement("img");
@@ -97,24 +110,19 @@
     } else {
       mugImg.hidden = true;
       mugPlaceholder.hidden = false;
-      mugPlaceholder.textContent = expr ? expr.label : "Mug shot";
+      mugPlaceholder.textContent = "";
       mugPlaceholder.style.background = char.color;
-      mugPlaceholder.style.color = "#fff";
     }
 
-    const name = state.characterName || char.name;
-    mugName.textContent = name;
-    mugName.hidden = !name;
-  }
+    mugName.textContent = state.characterName || char.name || "";
 
-  function renderDialogue(text) {
-    if (text && String(text).trim()) {
-      dialogueEl.textContent = text;
-      dialogueEl.classList.add("show");
-    } else {
-      dialogueEl.classList.remove("show");
-      dialogueEl.textContent = "";
+    if (exprChanged && visible) {
+      playExprAnim(state.expressionId);
     }
+
+    wasVisible = visible;
+    lastExprId = state.expressionId;
+    lastCharId = state.characterId;
   }
 
   function renderMix() {
@@ -140,7 +148,6 @@
     tixEl.textContent = String(state.tix ?? 0);
     renderHearts(Number(state.hearts) || 0);
     renderCharacter(state);
-    renderDialogue(state.dialogue);
     if (Array.isArray(state.mix)) {
       mix = state.mix.slice();
       renderMix();
@@ -185,7 +192,6 @@
     recipesEl.setAttribute("aria-hidden", open ? "false" : "true");
   }
 
-  /** Force the bar UI onto the phone — don't wait for sync. */
   function showGame() {
     gate.style.display = "none";
     gate.hidden = true;
@@ -207,20 +213,12 @@
     const clean = window.CherrySync.normalizeCode(code);
     joinInput.value = clean;
     joinError.textContent = "Opening bar…";
-
-    // ALWAYS open the game UI first (this was the phone stuck-screen bug)
     showGame();
-    setSyncPill("connecting");
 
     sync = window.CherrySync.createSync("player", { code: clean });
     sync.on((type, detail) => {
-      if (type === "status") setSyncPill(detail);
       if (type === "state") applyState(detail);
-      if (type === "error") {
-        setSyncPill("error");
-        joinError.textContent = detail;
-      }
-      if (type === "ready") setSyncPill(sync.getStatus());
+      if (type === "error") joinError.textContent = detail;
     });
     sync.start();
   }
