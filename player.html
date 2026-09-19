@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=7" />
+    <link rel="stylesheet" href="css/style.css?v=9" />
   </head>
   <body class="player-page">
     <div id="join-gate" class="landing">
       <div class="landing-card">
         <div class="landing-logo">Cherry Kins</div>
         <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v7</p>
+        <p class="hint" style="margin-bottom: 0.75rem">build v9</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -36,7 +36,8 @@
       </div>
     </div>
 
-    <div id="game" class="game" style="display: none">
+    <div class="game-frame" id="game-frame">
+      <div id="game" class="game" style="display: none">
       <header class="header">
         <div class="brand">Cherry Kins <span class="cherry" aria-hidden="true"></span></div>
         <div class="clock" id="clock">0X:XX</div>
@@ -55,6 +56,7 @@
           <div class="tix-label">Tix</div>
           <div class="tix-box">
             <span class="value" id="tix">0</span>
+            <span class="tix-float" id="tix-float" hidden></span>
           </div>
         </div>
       </aside>
@@ -110,6 +112,7 @@
           <div class="recipe-list" id="recipe-list"></div>
         </div>
       </section>
+      </div>
     </div>
 
     <script>
@@ -117,8 +120,8 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=7"></script>
-    <script src="js/sync.js?v=7"></script>
-    <script src="js/player.js?v=7"></script>
+    <script src="js/recipes.js?v=9"></script>
+    <script src="js/sync.js?v=9"></script>
+    <script src="js/player.js?v=9"></script>
   </body>
 </html>

@@ -9,6 +9,7 @@
     characterName: "",
     hearts: 3,
     tix: 0,
+    tixPopup: null,
     clock: "0X:XX",
     mix: [],
   };

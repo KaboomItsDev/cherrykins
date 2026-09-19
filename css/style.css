@@ -185,10 +185,43 @@ a {
 }
 
 /* ——— Player shell ——— */
+body.player-page {
+  overflow: auto;
+  background: #08060a;
+}
+
+body.player-page.in-game {
+  overflow: hidden;
+  background: #08060a;
+  display: grid;
+  place-items: center;
+}
+
+.game-frame {
+  display: none;
+  width: min(920px, 90vw);
+  height: min(640px, 86vh);
+  background: var(--bg-deep);
+  border: 3px solid #2a2430;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+body.player-page.in-game .game-frame {
+  display: block;
+}
+
+body.player-page.in-game .game-frame #game {
+  display: grid !important;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
 .game {
   height: 100%;
-  height: 100dvh;
-  min-height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 112px 1fr;
@@ -198,26 +231,12 @@ a {
     "prep prep";
 }
 
-.game[hidden] {
-  display: none !important;
-}
-
 body.player-page.in-game #join-gate {
   display: none !important;
 }
 
-body.player-page.in-game #game {
-  display: grid !important;
-  height: 100dvh;
-  min-height: 100dvh;
-}
-
-body.player-page {
-  overflow: auto;
-}
-
-body.player-page.in-game {
-  overflow: hidden;
+.game[hidden] {
+  display: none !important;
 }
 
 .header {
@@ -344,6 +363,7 @@ body.player-page.in-game {
   margin-top: auto;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.2rem;
 }
 
@@ -353,6 +373,8 @@ body.player-page.in-game {
   font-size: 1.1rem;
   letter-spacing: 0.06em;
   line-height: 1;
+  text-align: center;
+  width: 100%;
 }
 
 .tix-box {
@@ -362,9 +384,13 @@ body.player-page.in-game {
   background-size: cover;
   background-position: center;
   min-height: 48px;
+  width: 100%;
   display: grid;
   place-items: center;
   padding: 0.35rem;
+  text-align: center;
+  position: relative;
+  overflow: visible;
 }
 
 .tix-box .value {
@@ -374,6 +400,57 @@ body.player-page.in-game {
   line-height: 1;
   position: relative;
   z-index: 1;
+  text-align: center;
+  width: 100%;
+}
+
+.tix-float {
+  position: absolute;
+  left: 100%;
+  margin-left: 4px;
+  bottom: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: #e8d060;
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 3;
+  image-rendering: pixelated;
+}
+
+.tix-float.pop {
+  animation: tix-float-up 0.65s steps(6) forwards;
+}
+
+@keyframes tix-float-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-22px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-32px);
+  }
+}
+
+.money-add-row input {
+  flex: 1;
+  min-width: 0;
+  background: #140f18;
+  border: 2px solid var(--panel-line);
+  color: var(--text);
+  padding: 0.45rem 0.55rem;
+  font-family: inherit;
+  text-align: center;
+}
+
+.money-adder {
+  display: none;
 }
 
 /* Stage */
@@ -421,7 +498,7 @@ body.player-page.in-game {
   width: min(280px, 42%);
   height: 78%;
   transform: translateX(120vw);
-  transition: transform 0.55s steps(8);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -907,10 +984,36 @@ body.player-page.in-game {
   font-family: inherit;
 }
 
-.btn-row {
+.stat-row {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 0.35rem;
+}
+
+.stat-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-row .btn {
+  flex-shrink: 0;
+  min-width: 2rem;
+  padding: 0.45rem 0.55rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.money-adder {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+}
+
+.money-adder .btn {
+  padding: 0.4rem 0.25rem;
+  font-size: 0.7rem;
 }
 
 .btn {
@@ -992,13 +1095,18 @@ body.player-page.in-game {
 }
 
 @media (max-width: 800px) {
+  .game-frame {
+    width: min(100vw - 12px, 920px);
+    height: min(78vh, 640px);
+  }
+
   .game {
     grid-template-columns: 88px 1fr;
   }
 
   .prep {
     grid-template-columns: 100px 1fr 130px;
-    height: 170px;
+    height: 150px;
   }
 
   .admin {

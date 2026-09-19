@@ -7,9 +7,35 @@
   const btnExit = document.getElementById("btn-exit");
   const heartsInput = document.getElementById("hearts");
   const tixInput = document.getElementById("tix");
+  const moneyAmount = document.getElementById("money-amount");
+  const moneyAdd = document.getElementById("money-add");
   const clockInput = document.getElementById("clock");
+  const heartMinus = document.getElementById("heart-minus");
+  const heartPlus = document.getElementById("heart-plus");
   const previewChar = document.getElementById("preview-character");
   const previewBody = document.getElementById("preview-body");
+
+  const HEART_LOSE_SRC = "assets/ui/heart-lose.wav";
+  const MONEY_CHING_SRC = "assets/ui/money-ching.wav";
+  let heartLoseAudio = null;
+  let moneyChingAudio = null;
+  try {
+    heartLoseAudio = new Audio(HEART_LOSE_SRC);
+    heartLoseAudio.preload = "auto";
+  } catch (_) {}
+  try {
+    moneyChingAudio = new Audio(MONEY_CHING_SRC);
+    moneyChingAudio.preload = "auto";
+  } catch (_) {}
+
+  function playSfx(audio) {
+    if (!audio) return;
+    try {
+      audio.currentTime = 0;
+      const p = audio.play();
+      if (p && typeof p.catch === "function") p.catch(function () {});
+    } catch (_) {}
+  }
 
   const chars = window.CHERRY_CHARACTERS || [];
   let selectedId = chars[0] ? chars[0].id : null;
@@ -55,6 +81,36 @@
   function push(partial) {
     sync.setState(partial);
     renderPreview(sync.getState());
+    syncHeartsTixInputs();
+  }
+
+  function syncHeartsTixInputs() {
+    const s = sync.getState();
+    heartsInput.value = String(s.hearts ?? 3);
+    tixInput.value = String(s.tix ?? 0);
+  }
+
+  function setHearts(n, playSound) {
+    const prev = Number(sync.getState().hearts) || 0;
+    n = Math.max(0, Math.min(3, n));
+    if (playSound && n < prev) playSfx(heartLoseAudio);
+    push({ hearts: n });
+  }
+
+  function addMoney() {
+    const amount = Math.floor(Number(moneyAmount.value));
+    if (!amount || amount < 1) {
+      moneyAmount.focus();
+      return;
+    }
+    const next = (Number(sync.getState().tix) || 0) + amount;
+    playSfx(moneyChingAudio);
+    push({
+      tix: next,
+      tixPopup: { amount: amount, id: Date.now() },
+    });
+    moneyAmount.value = "";
+    moneyAmount.focus();
   }
 
   function renderPreview(state) {
@@ -151,6 +207,7 @@
     if (type === "state") {
       renderExprs();
       renderPreview(detail);
+      syncHeartsTixInputs();
     }
   });
 
@@ -169,20 +226,19 @@
     push({ characterVisible: false });
   });
 
-  heartsInput.addEventListener("change", () => {
-    let n = Number(heartsInput.value);
-    if (Number.isNaN(n)) n = 0;
-    n = Math.max(0, Math.min(3, n));
-    heartsInput.value = String(n);
-    push({ hearts: n });
+  heartMinus.addEventListener("click", () => {
+    setHearts((Number(sync.getState().hearts) || 0) - 1, true);
+  });
+  heartPlus.addEventListener("click", () => {
+    setHearts((Number(sync.getState().hearts) || 0) + 1, false);
   });
 
-  tixInput.addEventListener("change", () => {
-    let n = Number(tixInput.value);
-    if (Number.isNaN(n)) n = 0;
-    n = Math.max(0, n);
-    tixInput.value = String(n);
-    push({ tix: n });
+  moneyAdd.addEventListener("click", addMoney);
+  moneyAmount.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addMoney();
+    }
   });
 
   clockInput.addEventListener("change", () => {
@@ -219,6 +275,7 @@
       expressionId: "neutral",
       hearts: 3,
       tix: 0,
+      tixPopup: null,
       clock: "0X:XX",
     });
   }

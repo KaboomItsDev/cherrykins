@@ -8,6 +8,7 @@
   const clockEl = document.getElementById("clock");
   const heartsEl = document.getElementById("hearts");
   const tixEl = document.getElementById("tix");
+  const tixFloat = document.getElementById("tix-float");
   const mugPlaceholder = document.getElementById("mug-placeholder");
   const mugImg = document.getElementById("mug-img");
   const mugName = document.getElementById("mug-name");
@@ -28,6 +29,49 @@
   let lastExprId = null;
   let lastCharId = null;
   let wasVisible = false;
+  let lastHearts = 3;
+
+  const HEART_LOSE_SRC = "assets/ui/heart-lose.wav";
+  const MONEY_CHING_SRC = "assets/ui/money-ching.wav";
+  let heartLoseAudio = null;
+  let moneyChingAudio = null;
+  try {
+    heartLoseAudio = new Audio(HEART_LOSE_SRC);
+    heartLoseAudio.preload = "auto";
+  } catch (_) {}
+  try {
+    moneyChingAudio = new Audio(MONEY_CHING_SRC);
+    moneyChingAudio.preload = "auto";
+  } catch (_) {}
+
+  function playSfx(audio) {
+    if (!audio) return;
+    try {
+      audio.currentTime = 0;
+      const p = audio.play();
+      if (p && typeof p.catch === "function") p.catch(function () {});
+    } catch (_) {}
+  }
+
+  function playHeartLose() {
+    playSfx(heartLoseAudio);
+  }
+
+  let lastPopupId = null;
+
+  function showTixFloat(amount) {
+    if (!tixFloat || !amount) return;
+    tixFloat.hidden = false;
+    tixFloat.textContent = "+" + amount;
+    tixFloat.classList.remove("pop");
+    void tixFloat.offsetWidth;
+    tixFloat.classList.add("pop");
+    playSfx(moneyChingAudio);
+    window.setTimeout(function () {
+      tixFloat.classList.remove("pop");
+      tixFloat.hidden = true;
+    }, 700);
+  }
 
   function findChar(id) {
     return (window.CHERRY_CHARACTERS || []).find((c) => c.id === id) || null;
@@ -146,8 +190,20 @@
     if (!state) return;
     clockEl.textContent = state.clock || "0X:XX";
     tixEl.textContent = String(state.tix ?? 0);
-    renderHearts(Number(state.hearts) || 0);
+    const hearts = Number(state.hearts) || 0;
+    if (hearts < lastHearts) playHeartLose();
+    lastHearts = hearts;
+    renderHearts(hearts);
     renderCharacter(state);
+    if (
+      state.tixPopup &&
+      state.tixPopup.amount &&
+      state.tixPopup.id &&
+      state.tixPopup.id !== lastPopupId
+    ) {
+      lastPopupId = state.tixPopup.id;
+      showTixFloat(state.tixPopup.amount);
+    }
     if (Array.isArray(state.mix)) {
       mix = state.mix.slice();
       renderMix();

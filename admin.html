@@ -10,12 +10,12 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=7" />
+    <link rel="stylesheet" href="css/style.css?v=9" />
   </head>
   <body>
     <div class="admin">
       <aside class="admin-rail">
-        <h1>Admin Panel <span style="color:var(--muted);font-size:0.7rem">v7</span></h1>
+        <h1>Admin Panel <span style="color:var(--muted);font-size:0.7rem">v9</span></h1>
         <div class="room-box">
           <div class="meta">Sync code — Player types this (4 letters)</div>
           <div class="code" id="room-code">····</div>
@@ -37,17 +37,38 @@
         </div>
 
         <div>
-          <h2>Stats</h2>
-          <div class="field">
-            <label for="hearts">Hearts (0–3)</label>
-            <input id="hearts" type="number" min="0" max="3" value="3" />
+          <h2>Hearts</h2>
+          <div class="stat-row">
+            <button class="btn" id="heart-minus" type="button" title="Lose a heart">−</button>
+            <input id="hearts" type="number" min="0" max="3" value="3" readonly />
+            <button class="btn" id="heart-plus" type="button" title="Add a heart">+</button>
           </div>
+          <p class="hint" style="margin-top: 0.35rem">− plays heart-lose sound</p>
+        </div>
+
+        <div>
+          <h2>Tix / Money</h2>
           <div class="field">
-            <label for="tix">Tix</label>
-            <input id="tix" type="number" min="0" value="0" />
+            <label>Current tix</label>
+            <input id="tix" type="number" min="0" value="0" readonly />
           </div>
+          <div class="stat-row money-add-row">
+            <input
+              id="money-amount"
+              type="number"
+              min="1"
+              step="1"
+              placeholder="amount"
+              value=""
+            />
+            <button class="btn primary" id="money-add" type="button" title="Add to player tix">+</button>
+          </div>
+          <p class="hint" style="margin-top: 0.35rem">Type amount, hit + — ching + popup on player</p>
+        </div>
+
+        <div>
+          <h2>Clock</h2>
           <div class="field">
-            <label for="clock">Clock</label>
             <input id="clock" type="text" value="0X:XX" maxlength="8" />
           </div>
         </div>
@@ -77,8 +98,8 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=7"></script>
-    <script src="js/sync.js?v=7"></script>
-    <script src="js/admin.js?v=7"></script>
+    <script src="js/recipes.js?v=9"></script>
+    <script src="js/sync.js?v=9"></script>
+    <script src="js/admin.js?v=9"></script>
   </body>
 </html>
