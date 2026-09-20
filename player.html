@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=10" />
+    <link rel="stylesheet" href="css/style.css?v=11" />
   </head>
   <body class="player-page">
     <div id="join-gate" class="landing">
       <div class="landing-card">
         <div class="landing-logo">Cherry Kins</div>
         <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v10</p>
+        <p class="hint" style="margin-bottom: 0.75rem">build v11</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -38,90 +38,69 @@
 
     <div class="game-frame" id="game-frame">
       <div id="game" class="game" style="display: none">
-      <header class="header">
-        <div class="brand">Cherry Kins <span class="cherry" aria-hidden="true"></span></div>
-        <div class="clock" id="clock">0X:XX</div>
-      </header>
+        <header class="header">
+          <div class="brand">Cherry Kins <span class="cherry" aria-hidden="true"></span></div>
+          <div class="clock" id="clock">0X:XX</div>
+        </header>
 
-      <aside class="side">
-        <div class="mugshot-wrap">
-          <div class="mugshot" id="mugshot">
-            <div class="placeholder" id="mug-placeholder">Mug shot</div>
-            <img id="mug-img" alt="" hidden />
+        <aside class="side">
+          <div class="mugshot-wrap">
+            <div class="mugshot" id="mugshot">
+              <div class="placeholder" id="mug-placeholder">Mug shot</div>
+              <img id="mug-img" alt="" hidden />
+            </div>
+            <div class="mug-name" id="mug-name"></div>
           </div>
-          <div class="mug-name" id="mug-name"></div>
-        </div>
-        <div class="hearts" id="hearts" aria-label="Hearts"></div>
-        <div class="tix-wrap">
-          <div class="tix-label">Tix</div>
-          <div class="tix-box">
-            <span class="value" id="tix">0</span>
-            <span class="tix-float" id="tix-float" hidden></span>
+          <div class="hearts" id="hearts" aria-label="Hearts"></div>
+          <div class="tix-wrap">
+            <div class="tix-label">Tix</div>
+            <div class="tix-box">
+              <span class="value" id="tix">0</span>
+              <span class="tix-float" id="tix-float" hidden></span>
+            </div>
+          </div>
+        </aside>
+
+        <div class="stage-wrap">
+          <div class="stage">
+            <div class="scene" aria-hidden="true">
+              <img class="scene-layer layer-rootbg" src="assets/ui/rootbg.png" alt="" />
+              <img class="scene-layer layer-floor" src="assets/ui/floor.png" alt="" />
+              <img class="scene-layer layer-bgtables" src="assets/ui/bgtables.png" alt="" />
+              <img class="scene-layer layer-spotlights" src="assets/ui/spotlights.png" alt="" />
+              <img class="scene-layer layer-light light-a" src="assets/ui/light01.png" alt="" />
+              <img class="scene-layer layer-light light-b" src="assets/ui/light02.png" alt="" />
+              <img class="scene-layer layer-balconyseats" src="assets/ui/balconyseats.png" alt="" />
+              <img class="scene-layer layer-undertable" src="assets/ui/undertable.png" alt="" />
+              <img class="scene-layer layer-table" src="assets/ui/table.png" alt="" />
+            </div>
+            <div class="character" id="character">
+              <div class="body" id="character-body"></div>
+            </div>
+            <div class="bar">
+              <button
+                class="menu-arrow"
+                id="menu-arrow"
+                type="button"
+                title="Open recipes"
+                aria-label="Open drink recipes"
+              >
+                <svg viewBox="0 0 36 28" fill="currentColor" aria-hidden="true">
+                  <path d="M18 26 L2 4 H34 Z" />
+                </svg>
+              </button>
+              <button class="tablet" id="tablet" type="button" title="Recipes" aria-label="Recipes tablet"></button>
+            </div>
+          </div>
+
+          <div class="recipes" id="recipes" aria-hidden="true">
+            <div class="recipes-head">
+              <h2>RECIPES</h2>
+              <button class="recipes-close" id="recipes-close" type="button">Close</button>
+            </div>
+            <div class="recipe-list" id="recipe-list"></div>
           </div>
         </div>
-      </aside>
-
-      <div class="stage-wrap">
-        <div class="stage">
-          <div class="scene" aria-hidden="true">
-            <img class="scene-layer layer-rootbg" src="assets/ui/rootbg.png" alt="" width="214" height="140" />
-            <img class="scene-layer layer-floor" src="assets/ui/floor.png" alt="" />
-            <img class="scene-layer layer-bgtables" src="assets/ui/bgtables.png" alt="" />
-            <img class="scene-layer layer-spotlights" src="assets/ui/spotlights.png" alt="" />
-            <img class="scene-layer layer-light light-a" src="assets/ui/light01.png" alt="" />
-            <img class="scene-layer layer-light light-b" src="assets/ui/light02.png" alt="" />
-            <img class="scene-layer layer-balconyseats" src="assets/ui/balconyseats.png" alt="" />
-            <img class="scene-layer layer-undertable" src="assets/ui/undertable.png" alt="" />
-            <img class="scene-layer layer-table" src="assets/ui/table.png" alt="" />
-          </div>
-          <div class="character" id="character">
-            <div class="body" id="character-body"></div>
-          </div>
-        </div>
-        <div class="bar">
-          <button
-            class="menu-arrow"
-            id="menu-arrow"
-            type="button"
-            title="Open recipes"
-            aria-label="Open drink recipes"
-          >
-            <svg viewBox="0 0 36 28" fill="currentColor" aria-hidden="true">
-              <path d="M18 26 L2 4 H34 Z" />
-            </svg>
-          </button>
-          <button class="tablet" id="tablet" type="button" title="Recipes" aria-label="Recipes tablet"></button>
-        </div>
-      </div>
-
-      <section class="prep">
-        <div class="ice-bin">
-          <button class="stripe-can" id="stripe-can" type="button" data-ing="stripe">STR</button>
-          <button class="ice-tray" id="ice-tray" type="button" title="Add ice" aria-label="Add ice">
-            <span class="ice-cube"></span>
-            <span class="ice-cube"></span>
-            <span class="ice-cube"></span>
-            <span class="ice-cube"></span>
-            <span class="ice-cube"></span>
-            <span class="ice-cube"></span>
-          </button>
-        </div>
-
-        <div class="mixer">
-          <div class="shaker" aria-hidden="true"></div>
-          <div class="mix-tags" id="mix-tags"></div>
-        </div>
-
-        <div class="cans" id="cans"></div>
-
-        <div class="recipes" id="recipes" aria-hidden="true">
-          <div class="recipes-head">
-            <h2>RECIPES</h2>
-            <button class="recipes-close" id="recipes-close" type="button">Close</button>
-          </div>
-          <div class="recipe-list" id="recipe-list"></div>
-        </div>
-      </section>
       </div>
     </div>
 
@@ -130,8 +109,8 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=10"></script>
-    <script src="js/sync.js?v=10"></script>
-    <script src="js/player.js?v=10"></script>
+    <script src="js/recipes.js?v=11"></script>
+    <script src="js/sync.js?v=11"></script>
+    <script src="js/player.js?v=11"></script>
   </body>
 </html>

@@ -14,22 +14,18 @@
   const mugName = document.getElementById("mug-name");
   const character = document.getElementById("character");
   const characterBody = document.getElementById("character-body");
-  const cansEl = document.getElementById("cans");
-  const mixTags = document.getElementById("mix-tags");
   const recipesEl = document.getElementById("recipes");
   const recipeList = document.getElementById("recipe-list");
   const menuArrow = document.getElementById("menu-arrow");
   const tablet = document.getElementById("tablet");
   const recipesClose = document.getElementById("recipes-close");
-  const iceTray = document.getElementById("ice-tray");
-  const stripeCan = document.getElementById("stripe-can");
 
   let sync = null;
-  let mix = [];
   let lastExprId = null;
   let lastCharId = null;
   let wasVisible = false;
   let lastHearts = 3;
+  let lastPopupId = null;
 
   const HEART_LOSE_SRC = "assets/ui/heart-lose.wav";
   const MONEY_CHING_SRC = "assets/ui/money-ching.wav";
@@ -56,8 +52,6 @@
   function playHeartLose() {
     playSfx(heartLoseAudio);
   }
-
-  let lastPopupId = null;
 
   function showTixFloat(amount) {
     if (!tixFloat || !amount) return;
@@ -86,11 +80,8 @@
     const el = characterBody;
     el.classList.remove("anim-jump", "anim-tremble");
     void el.offsetWidth;
-    if (exprId === "annoyed") {
-      el.classList.add("anim-tremble");
-    } else {
-      el.classList.add("anim-jump");
-    }
+    if (exprId === "annoyed") el.classList.add("anim-tremble");
+    else el.classList.add("anim-jump");
     const clear = () => {
       el.classList.remove("anim-jump", "anim-tremble");
       el.removeEventListener("animationend", clear);
@@ -116,11 +107,8 @@
       wasVisible &&
       (state.expressionId !== lastExprId || state.characterId !== lastCharId);
 
-    if (visible) {
-      character.classList.add("in");
-    } else {
-      character.classList.remove("in");
-    }
+    if (visible) character.classList.add("in");
+    else character.classList.remove("in");
 
     characterBody.innerHTML = "";
     if (!char) {
@@ -160,30 +148,11 @@
 
     mugName.textContent = state.characterName || char.name || "";
 
-    if (exprChanged && visible) {
-      playExprAnim(state.expressionId);
-    }
+    if (exprChanged && visible) playExprAnim(state.expressionId);
 
     wasVisible = visible;
     lastExprId = state.expressionId;
     lastCharId = state.characterId;
-  }
-
-  function renderMix() {
-    mixTags.innerHTML = "";
-    mix.forEach((id) => {
-      const ing = (window.CHERRY_INGREDIENTS || []).find((i) => i.id === id);
-      const s = document.createElement("span");
-      s.textContent = ing ? ing.label : id;
-      mixTags.appendChild(s);
-    });
-  }
-
-  function addMix(id) {
-    if (mix.length >= 6) mix.shift();
-    mix.push(id);
-    renderMix();
-    if (sync) sync.setState({ mix: mix.slice() });
   }
 
   function applyState(state) {
@@ -204,25 +173,6 @@
       lastPopupId = state.tixPopup.id;
       showTixFloat(state.tixPopup.amount);
     }
-    if (Array.isArray(state.mix)) {
-      mix = state.mix.slice();
-      renderMix();
-    }
-  }
-
-  function buildCans() {
-    cansEl.innerHTML = "";
-    (window.CHERRY_INGREDIENTS || [])
-      .filter((i) => i.id !== "stripe")
-      .forEach((ing) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "can";
-        b.textContent = ing.label;
-        b.style.background = ing.color;
-        b.addEventListener("click", () => addMix(ing.id));
-        cansEl.appendChild(b);
-      });
   }
 
   function buildRecipes() {
@@ -297,10 +247,7 @@
   menuArrow.addEventListener("click", () => toggleRecipes());
   tablet.addEventListener("click", () => toggleRecipes());
   recipesClose.addEventListener("click", () => toggleRecipes(false));
-  iceTray.addEventListener("click", () => addMix("ice"));
-  stripeCan.addEventListener("click", () => addMix("stripe"));
 
-  buildCans();
   buildRecipes();
   renderHearts(3);
 
