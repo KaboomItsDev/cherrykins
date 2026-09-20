@@ -14,15 +14,12 @@
   const mugName = document.getElementById("mug-name");
   const character = document.getElementById("character");
   const characterBody = document.getElementById("character-body");
-  const recipesEl = document.getElementById("recipes");
-  const recipeList = document.getElementById("recipe-list");
-  const menuArrow = document.getElementById("menu-arrow");
-  const tablet = document.getElementById("tablet");
-  const recipesClose = document.getElementById("recipes-close");
   const scene = document.getElementById("scene");
+  const stage = document.getElementById("stage");
 
   let sync = null;
   let bystanders = null;
+  let craft = null;
   let joinTimer = null;
   let lastExprId = null;
   let lastCharId = null;
@@ -52,10 +49,6 @@
     } catch (_) {}
   }
 
-  function playHeartLose() {
-    playSfx(heartLoseAudio);
-  }
-
   function showTixFloat(amount) {
     if (!tixFloat || !amount) return;
     tixFloat.hidden = false;
@@ -76,7 +69,12 @@
 
   function findExpr(char, exprId) {
     if (!char) return null;
-    return char.expressions.find((e) => e.id === exprId) || char.expressions[0] || null;
+    return (
+      char.expressions.find((e) => e.id === exprId) ||
+      char.expressions.find((e) => e.id === "neutral") ||
+      char.expressions[0] ||
+      null
+    );
   }
 
   function playExprAnim(exprId) {
@@ -101,6 +99,32 @@
     }
   }
 
+  function setMug(char, expr) {
+    const mugPath = char.mug;
+    // Prefer dedicated mugshot if it loads; else use expression / body crop via expression src
+    const trySrc = mugPath || (expr && expr.src) || "";
+    if (!trySrc) {
+      mugImg.hidden = true;
+      mugPlaceholder.hidden = false;
+      mugPlaceholder.style.background = char.color;
+      return;
+    }
+    mugImg.onload = function () {
+      mugImg.hidden = false;
+      mugPlaceholder.hidden = true;
+    };
+    mugImg.onerror = function () {
+      if (expr && expr.src && mugImg.src.indexOf(expr.src) === -1) {
+        mugImg.src = expr.src;
+        return;
+      }
+      mugImg.hidden = true;
+      mugPlaceholder.hidden = false;
+      mugPlaceholder.style.background = char.color;
+    };
+    mugImg.src = trySrc;
+  }
+
   function renderCharacter(state) {
     const char = findChar(state.characterId);
     const expr = findExpr(char, state.expressionId);
@@ -109,6 +133,9 @@
       visible &&
       wasVisible &&
       (state.expressionId !== lastExprId || state.characterId !== lastCharId);
+
+    character.classList.toggle("fit-tall", !!(char && char.fit === "tall"));
+    character.classList.toggle("fit-counter", !!(char && char.fit === "counter"));
 
     if (visible) character.classList.add("in");
     else character.classList.remove("in");
@@ -125,33 +152,22 @@
     if (expr && expr.src) {
       const img = document.createElement("img");
       img.src = expr.src;
-      img.alt = char.name + " — " + expr.label;
+      img.alt = char.name + " — " + (expr.label || "");
       characterBody.appendChild(img);
     } else {
+      // Missing expression art (e.g. Stampni annoyed) — empty slot
       const ph = document.createElement("div");
-      ph.className = "placeholder-char";
-      ph.style.background = char.color;
-      const label = document.createElement("div");
-      label.className = "expr-label";
-      label.textContent = expr ? expr.label : "—";
-      ph.appendChild(label);
+      ph.className = "placeholder-char missing-expr";
+      ph.style.background = "transparent";
       characterBody.appendChild(ph);
     }
 
-    if (expr && expr.src) {
-      mugImg.src = expr.src;
-      mugImg.hidden = false;
-      mugPlaceholder.hidden = true;
-    } else {
-      mugImg.hidden = true;
-      mugPlaceholder.hidden = false;
-      mugPlaceholder.textContent = "";
-      mugPlaceholder.style.background = char.color;
-    }
-
+    setMug(char, expr);
     mugName.textContent = state.characterName || char.name || "";
 
-    if (exprChanged && visible) playExprAnim(state.expressionId);
+    if (exprChanged && visible && expr && expr.src) {
+      playExprAnim(state.expressionId);
+    }
 
     wasVisible = visible;
     lastExprId = state.expressionId;
@@ -163,7 +179,7 @@
     clockEl.textContent = state.clock || "0X:XX";
     tixEl.textContent = String(state.tix ?? 0);
     const hearts = Number(state.hearts) || 0;
-    if (hearts < lastHearts) playHeartLose();
+    if (hearts < lastHearts) playSfx(heartLoseAudio);
     lastHearts = hearts;
     renderHearts(hearts);
     renderCharacter(state);
@@ -178,29 +194,6 @@
     }
   }
 
-  function buildRecipes() {
-    recipeList.innerHTML = "";
-    (window.CHERRY_RECIPES || []).forEach((r) => {
-      const card = document.createElement("article");
-      card.className = "recipe-card";
-      card.innerHTML =
-        "<h3>" +
-        r.name +
-        "</h3><p>" +
-        r.blurb +
-        '</p><div class="steps">' +
-        r.steps.join(" → ") +
-        "</div>";
-      recipeList.appendChild(card);
-    });
-  }
-
-  function toggleRecipes(force) {
-    const open = force !== undefined ? force : !recipesEl.classList.contains("open");
-    recipesEl.classList.toggle("open", open);
-    recipesEl.setAttribute("aria-hidden", open ? "false" : "true");
-  }
-
   function showGame() {
     gate.style.display = "none";
     gate.hidden = true;
@@ -213,6 +206,13 @@
       bystanders = window.CherryBystanders.createBystanders(scene);
     }
     if (bystanders) bystanders.start();
+    if (!craft && window.CherryCraft) {
+      craft = window.CherryCraft.createCraft(stage, {
+        onDrink: function (recipe) {
+          if (sync) sync.setState({ lastDrink: recipe.id });
+        },
+      });
+    }
   }
 
   function failJoin(message) {
@@ -244,29 +244,18 @@
 
     const clean = window.CherrySync.normalizeCode(code);
     joinInput.value = clean;
-
     if (clean.length !== 4) {
       joinError.textContent = "Need the 4-letter code from Admin.";
       return;
     }
 
-    // Stay on the join screen until Admin is actually found
     joinError.textContent = "Connecting…";
     joinBtn.disabled = true;
     let entered = false;
 
     sync = window.CherrySync.createSync("player", { code: clean });
     sync.on((type, detail) => {
-      if (type === "status" && detail === "connected" && !entered) {
-        entered = true;
-        if (joinTimer) {
-          clearTimeout(joinTimer);
-          joinTimer = null;
-        }
-        joinError.textContent = "";
-        showGame();
-      }
-      if (type === "state") {
+      if ((type === "status" && detail === "connected") || type === "state") {
         if (!entered) {
           entered = true;
           if (joinTimer) {
@@ -276,7 +265,7 @@
           joinError.textContent = "";
           showGame();
         }
-        applyState(detail);
+        if (type === "state") applyState(detail);
       }
       if (type === "error" && !entered) {
         failJoin(typeof detail === "string" ? detail : "Wrong code.");
@@ -285,9 +274,7 @@
     sync.start();
 
     joinTimer = setTimeout(function () {
-      if (!entered) {
-        failJoin("Wrong code — no Admin with that sync code.");
-      }
+      if (!entered) failJoin("Wrong code — no Admin with that sync code.");
     }, 8000);
   }
 
@@ -302,11 +289,6 @@
     joinInput.value = window.CherrySync.normalizeCode(joinInput.value);
   });
 
-  menuArrow.addEventListener("click", () => toggleRecipes());
-  tablet.addEventListener("click", () => toggleRecipes());
-  recipesClose.addEventListener("click", () => toggleRecipes(false));
-
-  buildRecipes();
   renderHearts(3);
 
   if (params.get("code")) {

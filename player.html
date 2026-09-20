@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=13" />
+    <link rel="stylesheet" href="css/style.css?v=15" />
   </head>
   <body class="player-page">
     <div id="join-gate" class="landing">
       <div class="landing-card">
         <div class="landing-logo">Cherry Kins</div>
         <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v13</p>
+        <p class="hint" style="margin-bottom: 0.75rem">build v15</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -62,7 +62,7 @@
         </aside>
 
         <div class="stage-wrap">
-          <div class="stage">
+          <div class="stage" id="stage">
             <div class="scene" aria-hidden="true" id="scene">
               <img class="scene-layer layer-rootbg" src="assets/ui/rootbg.png" alt="" />
               <img class="scene-layer layer-floor" src="assets/ui/floor.png" alt="" />
@@ -74,31 +74,68 @@
               <img class="scene-layer layer-undertable" src="assets/ui/undertable.png" alt="" />
               <img class="scene-layer layer-table" src="assets/ui/table.png" alt="" />
             </div>
+
             <div class="character" id="character">
               <div class="body" id="character-body"></div>
             </div>
-            <div class="bar">
-              <button
-                class="menu-arrow"
-                id="menu-arrow"
-                type="button"
-                title="Open recipes"
-                aria-label="Open drink recipes"
-              >
-                <svg viewBox="0 0 36 28" fill="currentColor" aria-hidden="true">
-                  <path d="M18 26 L2 4 H34 Z" />
-                </svg>
-              </button>
-              <button class="tablet" id="tablet" type="button" title="Recipes" aria-label="Recipes tablet"></button>
-            </div>
-          </div>
 
-          <div class="recipes" id="recipes" aria-hidden="true">
-            <div class="recipes-head">
-              <h2>RECIPES</h2>
-              <button class="recipes-close" id="recipes-close" type="button">Close</button>
+            <!-- Table props: opposite ends -->
+            <button type="button" class="craft-prop craft-bell" id="craft-bell" title="Ring">
+              <img src="assets/ui/bell.png" alt="Bell" />
+            </button>
+            <button type="button" class="craft-prop craft-menu" id="craft-menu" title="Menu">
+              <img src="assets/ui/menu.png" alt="Menu" />
+            </button>
+
+            <!-- Undertable craft -->
+            <div class="craft-bay">
+              <img
+                id="craft-ice"
+                class="craft-ice"
+                src="assets/ui/ice.png"
+                data-src="assets/ui/ice.png"
+                data-hover="assets/ui/ice_hover.png"
+                alt="Ice"
+                draggable="false"
+              />
+              <div class="craft-shaker-wrap">
+                <img
+                  id="craft-shaker"
+                  class="craft-shaker"
+                  src="assets/ui/shaker.png"
+                  data-src="assets/ui/shaker.png"
+                  data-hover="assets/ui/shaker_hover.png"
+                  alt="Shaker"
+                  draggable="false"
+                />
+                <div class="shaker-tip" id="shaker-tip"><em>empty</em></div>
+              </div>
+              <div class="craft-bottles" id="craft-bottles">
+                <button type="button" class="craft-bottle" data-ing="ade" title="Adelhyde">
+                  <img src="assets/ingredients/Adelhyde.png" alt="Adelhyde" draggable="false" />
+                </button>
+                <button type="button" class="craft-bottle" data-ing="bron" title="Bronson Extract">
+                  <img src="assets/ingredients/Bronson_Extract.png" alt="Bronson" draggable="false" />
+                </button>
+                <button type="button" class="craft-bottle" data-ing="flan" title="Flanergide">
+                  <img src="assets/ingredients/Flanergide.png" alt="Flanergide" draggable="false" />
+                </button>
+                <button type="button" class="craft-bottle" data-ing="powd" title="Powdered Delta">
+                  <img src="assets/ingredients/Powdered_Delta.png" alt="Powdered Delta" draggable="false" />
+                </button>
+                <button type="button" class="craft-bottle" data-ing="karmo" title="Karmotrine">
+                  <img src="assets/ingredients/Karmotrine.png" alt="Karmotrine" draggable="false" />
+                </button>
+              </div>
+              <div class="craft-result" id="craft-result"></div>
             </div>
-            <div class="recipe-list" id="recipe-list"></div>
+
+            <!-- Menu pull-up -->
+            <div class="menu-panel" id="menu-panel" aria-hidden="true">
+              <img class="menu-panel-bg" src="assets/ui/menu_up.png" alt="" />
+              <button type="button" class="menu-close" id="menu-close">Close</button>
+              <div class="menu-recipe-list" id="menu-recipe-list"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -109,9 +146,10 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=13"></script>
-    <script src="js/sync.js?v=13"></script>
-    <script src="js/bystanders.js?v=13"></script>
-    <script src="js/player.js?v=13"></script>
+    <script src="js/recipes.js?v=15"></script>
+    <script src="js/sync.js?v=15"></script>
+    <script src="js/bystanders.js?v=15"></script>
+    <script src="js/craft.js?v=15"></script>
+    <script src="js/player.js?v=15"></script>
   </body>
 </html>

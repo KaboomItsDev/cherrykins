@@ -122,6 +122,9 @@
       wasVisible &&
       (state.expressionId !== lastExprId || state.characterId !== lastCharId);
 
+    previewChar.classList.toggle("fit-tall", !!(char && char.fit === "tall"));
+    previewChar.classList.toggle("fit-counter", !!(char && char.fit === "counter"));
+
     if (visible) previewChar.classList.add("in");
     else previewChar.classList.remove("in");
 
@@ -134,17 +137,12 @@
         previewBody.appendChild(img);
       } else {
         const ph = document.createElement("div");
-        ph.className = "placeholder-char";
-        ph.style.background = char.color;
-        const label = document.createElement("div");
-        label.className = "expr-label";
-        label.textContent = (char.name + " · " + (expr ? expr.label : "")).trim();
-        ph.appendChild(label);
+        ph.className = "placeholder-char missing-expr";
         previewBody.appendChild(ph);
       }
     }
 
-    if (exprChanged && visible) playExprAnim(previewBody, state.expressionId);
+    if (exprChanged && visible && expr && expr.src) playExprAnim(previewBody, state.expressionId);
 
     wasVisible = visible;
     lastExprId = state.expressionId;
@@ -186,7 +184,8 @@
     char.expressions.forEach((e) => {
       const b = document.createElement("button");
       b.type = "button";
-      b.textContent = e.label;
+      b.textContent = e.label + (e.src ? "" : " ·");
+      if (!e.src) b.classList.add("dim");
       if (e.id === current) b.classList.add("active");
       b.addEventListener("click", () => {
         push({

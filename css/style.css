@@ -617,7 +617,310 @@ body.player-page.in-game #join-gate {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
+
+/* Chip / Stampni already fit behind the counter */
+.character.fit-counter .body img {
+  max-height: 100%;
+  width: auto;
+}
+
+/* Taller patrons (214×200) — shrink to sit behind the bar like Chip */
+.character.fit-tall {
+  transform-origin: bottom center;
+}
+.character.fit-tall.in {
+  transform: translateX(-50%) scale(0.5);
+}
+.character.fit-tall:not(.in) {
+  transform: translateX(120vw) scale(0.5);
+}
+
+.placeholder-char.missing-expr {
+  width: 40%;
+  height: 40%;
+  border: none;
+  background: transparent !important;
+  opacity: 0.15;
+}
+
+/* ——— Craft bay (undertable) ——— */
+.craft-bay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 38%;
+  z-index: 12;
+  pointer-events: none;
+}
+
+.craft-prop {
+  position: absolute;
+  z-index: 13;
+  pointer-events: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  image-rendering: pixelated;
+}
+
+.craft-prop img {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+/* Opposite ends of the bar top (above undertable) */
+.craft-bell {
+  left: 6%;
+  bottom: 42%;
+  width: 9%;
+}
+
+.craft-menu {
+  right: 5%;
+  bottom: 40%;
+  width: 13%;
+}
+
+.craft-bell.ring {
+  animation: bell-ring 0.45s steps(4);
+}
+
+@keyframes bell-ring {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-18deg);
+  }
+  75% {
+    transform: rotate(18deg);
+  }
+}
+
+/* Ice sits in the snowflake bin (left slot on undertable) */
+.craft-ice {
+  position: absolute;
+  left: 18%;
+  bottom: 46%;
+  width: 9%;
+  height: auto;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  z-index: 14;
+}
+
+/* Shaker centered on the undertable shelf */
+.craft-shaker-wrap {
+  position: absolute;
+  left: 45%;
+  bottom: 22%;
+  width: 9%;
+  pointer-events: auto;
+  z-index: 14;
+}
+
+.craft-shaker {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.craft-shaker.holding {
+  cursor: grabbing;
+  filter: brightness(1.15);
+}
+
+.craft-shaker.pulse {
+  filter: brightness(1.35);
+}
+
+.shaker-tip {
+  position: absolute;
+  left: 50%;
+  bottom: 105%;
+  transform: translateX(-50%);
+  min-width: 90px;
+  padding: 0.25rem 0.4rem;
+  background: #140f18;
+  border: 1px solid var(--panel-line);
+  font-size: 0.55rem;
+  color: var(--text);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 20;
+}
+
+.shaker-tip.show {
+  opacity: 1;
+}
+
+/* Ingredient bottles along the undertable shelf */
+.craft-bottles {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 6%;
+  display: flex;
+  gap: 2.5%;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 14;
+}
+
+.craft-bottle {
+  width: 14%;
+  max-width: 26px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.craft-bottle img {
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.craft-result {
+  position: absolute;
+  left: 32%;
+  bottom: 8%;
+  width: 11%;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.craft-drink {
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  animation: drink-pop 0.35s steps(4);
+}
+
+@keyframes drink-pop {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.craft-ghost {
+  position: fixed;
+  width: 28px;
+  height: auto;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  image-rendering: pixelated;
+  opacity: 0.9;
+}
+
+/* Menu pull-up */
+.menu-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 58%;
+  z-index: 25;
+  transform: translateY(105%);
+  transition: transform 0.35s steps(7);
+  pointer-events: none;
+}
+
+.menu-panel.open {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.menu-panel-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  image-rendering: pixelated;
+}
+
+.menu-close {
+  position: absolute;
+  top: 6%;
+  right: 4%;
+  z-index: 2;
+  border: 1px solid var(--panel-line);
+  background: #140f18;
+  color: var(--muted);
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  cursor: pointer;
+}
+
+.menu-recipe-list {
+  position: absolute;
+  inset: 14% 6% 8%;
+  z-index: 2;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.menu-recipe {
+  background: rgba(10, 8, 14, 0.75);
+  border: 1px solid #3a3540;
+  padding: 0.35rem;
+}
+
+.menu-recipe h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--pink);
+  line-height: 1;
+  margin-bottom: 0.15rem;
+}
+
+.menu-tag {
+  font-size: 0.55rem;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.menu-ing {
+  font-size: 0.62rem;
+  font-family: var(--font-ui);
+  line-height: 1.25;
+}
+
+.expr-grid button.dim {
+  opacity: 0.45;
+}
+
 
 .character .body .placeholder-char {
   width: 70%;
