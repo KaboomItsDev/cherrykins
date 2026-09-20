@@ -122,7 +122,7 @@ function cherryExpr(srcMap) {
 }
 
 /**
- * fit: "counter" = already sized like Chip; "tall" = scale down behind bar.
+ * fit: "counter" = Chip; "counter-up" = Chip scale, higher; "tall" = shrink to Chip footprint.
  * mug: optional assets/mugshots/<id>.png (add later)
  */
 window.CHERRY_CHARACTERS = [
@@ -190,7 +190,7 @@ window.CHERRY_CHARACTERS = [
     id: "stampni",
     name: "Stampni",
     color: "#504070",
-    fit: "counter",
+    fit: "counter-up",
     mug: "assets/mugshots/stampni.png",
     expressions: cherryExpr({
       neutral: "assets/characters/stampni_neutral.png",

@@ -124,6 +124,10 @@
 
     previewChar.classList.toggle("fit-tall", !!(char && char.fit === "tall"));
     previewChar.classList.toggle("fit-counter", !!(char && char.fit === "counter"));
+    previewChar.classList.toggle(
+      "fit-counter-up",
+      !!(char && char.fit === "counter-up")
+    );
 
     if (visible) previewChar.classList.add("in");
     else previewChar.classList.remove("in");

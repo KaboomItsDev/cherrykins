@@ -615,16 +615,28 @@ body.player-page.in-game #join-gate {
   display: block;
 }
 
-/* Chip / Stampni (214×99) — size OK, lift onto the counter */
+/* Chip — leave as-is (perfect) */
 .character.fit-counter .body img {
+  left: 0;
+  width: 100%;
   bottom: 46%;
 }
 
-/* Taller patrons — a bit smaller, lifted behind the bar */
+/* Stampni — same scale as Chip, nudged up a little */
+.character.fit-counter-up .body img {
+  left: 0;
+  width: 100%;
+  bottom: 51%;
+}
+
+/*
+ * Tall patrons (214×200) — match Chip’s on-screen footprint.
+ * Full-frame sprites were only showing heads above the bar.
+ */
 .character.fit-tall .body img {
-  left: 8%;
-  width: 84%;
-  bottom: 7%;
+  left: 32%;
+  width: 36%;
+  bottom: 46%;
 }
 
 .placeholder-char.missing-expr {
@@ -799,28 +811,48 @@ body.player-page.in-game #join-gate {
   opacity: 1;
 }
 
-/* Ingredient bottles — right shelf slot */
+/* Ingredient bottles — clustered bunch on the right shelf */
 .craft-bottles {
   position: absolute;
-  left: 62%;
-  right: 3%;
-  bottom: 10%;
-  display: flex;
-  gap: 3%;
-  align-items: flex-end;
-  justify-content: flex-end;
-  pointer-events: auto;
+  left: 64%;
+  right: 2%;
+  bottom: 6%;
+  height: 48%;
+  pointer-events: none;
   z-index: 14;
 }
 
 .craft-bottle {
-  width: 18%;
-  max-width: 28px;
+  position: absolute;
+  width: 26%;
+  max-width: 26px;
   background: none;
   border: none;
   padding: 0;
   cursor: grab;
   touch-action: none;
+  pointer-events: auto;
+}
+
+.craft-bottle[data-ing="ade"] {
+  left: 6%;
+  bottom: 42%;
+}
+.craft-bottle[data-ing="bron"] {
+  left: 38%;
+  bottom: 52%;
+}
+.craft-bottle[data-ing="flan"] {
+  left: 68%;
+  bottom: 40%;
+}
+.craft-bottle[data-ing="powd"] {
+  left: 18%;
+  bottom: 8%;
+}
+.craft-bottle[data-ing="karmo"] {
+  left: 52%;
+  bottom: 4%;
 }
 
 .craft-bottle img {
