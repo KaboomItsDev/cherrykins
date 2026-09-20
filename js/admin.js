@@ -267,6 +267,12 @@
   renderPreview(sync.getState());
   sync.start();
 
+  if (window.CherryBystanders) {
+    const adminScene = document.getElementById("admin-scene");
+    const crowd = window.CherryBystanders.createBystanders(adminScene);
+    crowd.start();
+  }
+
   if (selectedId) {
     const char = selectedChar();
     push({

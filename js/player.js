@@ -19,8 +19,11 @@
   const menuArrow = document.getElementById("menu-arrow");
   const tablet = document.getElementById("tablet");
   const recipesClose = document.getElementById("recipes-close");
+  const scene = document.getElementById("scene");
 
   let sync = null;
+  let bystanders = null;
+  let joinTimer = null;
   let lastExprId = null;
   let lastCharId = null;
   let wasVisible = false;
@@ -206,6 +209,25 @@
     joinBtn.disabled = false;
     document.body.classList.add("in-game");
     applyState(sync ? sync.getState() : window.CherrySync.DEFAULT_STATE);
+    if (!bystanders && window.CherryBystanders) {
+      bystanders = window.CherryBystanders.createBystanders(scene);
+    }
+    if (bystanders) bystanders.start();
+  }
+
+  function failJoin(message) {
+    if (joinTimer) {
+      clearTimeout(joinTimer);
+      joinTimer = null;
+    }
+    if (sync) {
+      try {
+        sync.destroy();
+      } catch (_) {}
+      sync = null;
+    }
+    joinBtn.disabled = false;
+    joinError.textContent = message || "Wrong code.";
   }
 
   function startPlayer(code) {
@@ -215,27 +237,63 @@
       } catch (_) {}
       sync = null;
     }
+    if (joinTimer) {
+      clearTimeout(joinTimer);
+      joinTimer = null;
+    }
 
     const clean = window.CherrySync.normalizeCode(code);
     joinInput.value = clean;
-    joinError.textContent = "Opening bar…";
-    showGame();
 
-    sync = window.CherrySync.createSync("player", { code: clean });
-    sync.on((type, detail) => {
-      if (type === "state") applyState(detail);
-      if (type === "error") joinError.textContent = detail;
-    });
-    sync.start();
-  }
-
-  joinBtn.addEventListener("click", () => {
-    const code = window.CherrySync.normalizeCode(joinInput.value);
-    if (code.length !== 4) {
+    if (clean.length !== 4) {
       joinError.textContent = "Need the 4-letter code from Admin.";
       return;
     }
-    startPlayer(code);
+
+    // Stay on the join screen until Admin is actually found
+    joinError.textContent = "Connecting…";
+    joinBtn.disabled = true;
+    let entered = false;
+
+    sync = window.CherrySync.createSync("player", { code: clean });
+    sync.on((type, detail) => {
+      if (type === "status" && detail === "connected" && !entered) {
+        entered = true;
+        if (joinTimer) {
+          clearTimeout(joinTimer);
+          joinTimer = null;
+        }
+        joinError.textContent = "";
+        showGame();
+      }
+      if (type === "state") {
+        if (!entered) {
+          entered = true;
+          if (joinTimer) {
+            clearTimeout(joinTimer);
+            joinTimer = null;
+          }
+          joinError.textContent = "";
+          showGame();
+        }
+        applyState(detail);
+      }
+      if (type === "error" && !entered) {
+        failJoin(typeof detail === "string" ? detail : "Wrong code.");
+      }
+    });
+    sync.start();
+
+    joinTimer = setTimeout(function () {
+      if (!entered) {
+        failJoin("Wrong code — no Admin with that sync code.");
+      }
+    }, 8000);
+  }
+
+  joinBtn.addEventListener("click", () => {
+    joinError.textContent = "";
+    startPlayer(joinInput.value);
   });
   joinInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") joinBtn.click();

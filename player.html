@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=12" />
+    <link rel="stylesheet" href="css/style.css?v=13" />
   </head>
   <body class="player-page">
     <div id="join-gate" class="landing">
       <div class="landing-card">
         <div class="landing-logo">Cherry Kins</div>
         <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v12</p>
+        <p class="hint" style="margin-bottom: 0.75rem">build v13</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -63,7 +63,7 @@
 
         <div class="stage-wrap">
           <div class="stage">
-            <div class="scene" aria-hidden="true">
+            <div class="scene" aria-hidden="true" id="scene">
               <img class="scene-layer layer-rootbg" src="assets/ui/rootbg.png" alt="" />
               <img class="scene-layer layer-floor" src="assets/ui/floor.png" alt="" />
               <img class="scene-layer layer-bgtables" src="assets/ui/bgtables.png" alt="" />
@@ -109,8 +109,9 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=12"></script>
-    <script src="js/sync.js?v=12"></script>
-    <script src="js/player.js?v=12"></script>
+    <script src="js/recipes.js?v=13"></script>
+    <script src="js/sync.js?v=13"></script>
+    <script src="js/bystanders.js?v=13"></script>
+    <script src="js/player.js?v=13"></script>
   </body>
 </html>
