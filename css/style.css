@@ -74,7 +74,7 @@ a {
 }
 
 .landing-logo img {
-  width: min(280px, 85%);
+  width: min(360px, 92%);
   height: auto;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
@@ -224,7 +224,7 @@ body.player-page.in-game #join-gate {
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 52px;
+  height: 64px;
   border-bottom: 2px solid var(--panel-line);
   background: #000;
 }
@@ -234,7 +234,7 @@ body.player-page.in-game #join-gate {
 }
 
 .brand img {
-  height: 36px;
+  height: 52px;
   width: auto;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
@@ -267,12 +267,39 @@ body.player-page.in-game #join-gate {
 }
 
 .guest-name {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  color: var(--pink);
-  letter-spacing: 0.04em;
-  line-height: 1.1;
-  min-height: 1.2em;
+  display: none;
+}
+
+.errors-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.errors-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.errors-box {
+  flex: 1;
+  min-height: 4.5rem;
+  border: 1px solid var(--panel-line);
+  background: #050505;
+  padding: 0.35rem;
+  font-size: 0.58rem;
+  color: #c06060;
+  line-height: 1.35;
+  overflow: auto;
+  font-family: var(--font-ui);
+}
+
+.side .hearts {
+  margin-top: auto;
 }
 
 .mugshot-wrap {
@@ -588,14 +615,16 @@ body.player-page.in-game #join-gate {
   display: block;
 }
 
-/* Chip / Stampni (214×99) — sit on the counter line */
+/* Chip / Stampni (214×99) — size OK, lift onto the counter */
 .character.fit-counter .body img {
-  bottom: 39%;
+  bottom: 46%;
 }
 
-/* Taller patrons (214×200) — full-frame overlay behind the bar */
+/* Taller patrons — a bit smaller, lifted behind the bar */
 .character.fit-tall .body img {
-  bottom: 0;
+  left: 8%;
+  width: 84%;
+  bottom: 7%;
 }
 
 .placeholder-char.missing-expr {
@@ -692,6 +721,10 @@ body.player-page.in-game #join-gate {
   width: 9%;
   pointer-events: auto;
   z-index: 14;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .craft-shaker {
@@ -707,10 +740,41 @@ body.player-page.in-game #join-gate {
 .craft-shaker.holding {
   cursor: grabbing;
   filter: brightness(1.15);
+  z-index: 16;
+  position: relative;
 }
 
 .craft-shaker.pulse {
   filter: brightness(1.35);
+}
+
+.craft-drink {
+  width: 72%;
+  max-width: 22px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: grab;
+  touch-action: none;
+  pointer-events: auto;
+  animation: drink-pop 0.35s steps(4);
+  position: relative;
+  z-index: 15;
+}
+
+.craft-drink.dragging {
+  opacity: 0.35;
+  cursor: grabbing;
+}
+
+.craft-ghost-drink {
+  width: 24px;
+}
+
+.craft-result {
+  display: none;
 }
 
 .shaker-tip {
@@ -764,22 +828,6 @@ body.player-page.in-game #join-gate {
   height: auto;
   image-rendering: pixelated;
   display: block;
-}
-
-.craft-result {
-  position: absolute;
-  left: 32%;
-  bottom: 8%;
-  width: 11%;
-  z-index: 15;
-  pointer-events: none;
-}
-
-.craft-drink {
-  width: 100%;
-  height: auto;
-  image-rendering: pixelated;
-  animation: drink-pop 0.35s steps(4);
 }
 
 @keyframes drink-pop {

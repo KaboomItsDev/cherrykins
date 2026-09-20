@@ -9,7 +9,7 @@
   const heartsEl = document.getElementById("hearts");
   const tixEl = document.getElementById("tix");
   const tixFloat = document.getElementById("tix-float");
-  const mugName = document.getElementById("mug-name");
+  const errorsLog = document.getElementById("errors-log");
   const character = document.getElementById("character");
   const characterBody = document.getElementById("character-body");
   const scene = document.getElementById("scene");
@@ -97,6 +97,14 @@
     }
   }
 
+  function pushError(msg) {
+    if (!errorsLog || !msg) return;
+    const line = document.createElement("div");
+    line.textContent = msg;
+    errorsLog.appendChild(line);
+    errorsLog.scrollTop = errorsLog.scrollHeight;
+  }
+
   function renderCharacter(state) {
     const char = findChar(state.characterId);
     const expr = findExpr(char, state.expressionId);
@@ -117,7 +125,6 @@
       wasVisible = false;
       lastExprId = null;
       lastCharId = null;
-      if (mugName) mugName.textContent = "";
       return;
     }
 
@@ -132,8 +139,6 @@
       ph.style.background = "transparent";
       characterBody.appendChild(ph);
     }
-
-    if (mugName) mugName.textContent = state.characterName || char.name || "";
 
     if (exprChanged && visible && expr && expr.src) {
       playExprAnim(state.expressionId);
@@ -180,6 +185,12 @@
       craft = window.CherryCraft.createCraft(stage, {
         onDrink: function (recipe) {
           if (sync) sync.setState({ lastDrink: recipe.id });
+        },
+        onServe: function (recipe) {
+          if (sync) sync.setState({ lastServed: recipe.id, lastServedAt: Date.now() });
+        },
+        onFail: function () {
+          pushError("Bad mix — dumped.");
         },
       });
     }

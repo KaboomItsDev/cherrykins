@@ -7,13 +7,17 @@
     const stage = root;
     const mix = window.CherryDrinks.emptyMix();
     let drinkEl = null;
+    let drinkRecipe = null;
     let dragging = null;
     let shakeYs = [];
     let shakeDir = 0;
     let shakeCount = 0;
     let holdingShaker = false;
+    let holdOriginX = 0;
+    let holdOriginY = 0;
 
     const shaker = stage.querySelector("#craft-shaker");
+    const shakerWrap = stage.querySelector(".craft-shaker-wrap");
     const ice = stage.querySelector("#craft-ice");
     const tip = stage.querySelector("#shaker-tip");
     const menuBtn = stage.querySelector("#craft-menu");
@@ -22,7 +26,6 @@
     const menuClose = stage.querySelector("#menu-close");
     const menuList = stage.querySelector("#menu-recipe-list");
     const bottles = stage.querySelectorAll(".craft-bottle");
-    const resultSlot = stage.querySelector("#craft-result");
 
     function resetMix() {
       const empty = window.CherryDrinks.emptyMix();
@@ -34,6 +37,10 @@
 
     function updateTip() {
       if (!tip) return;
+      if (drinkEl) {
+        tip.innerHTML = drinkRecipe ? drinkRecipe.name : "";
+        return;
+      }
       const parts = [];
       window.CHERRY_BOTTLES.forEach((b) => {
         const n = mix[b.id] || 0;
@@ -53,6 +60,20 @@
       const hover = el.getAttribute("data-hover");
       if (!base || !hover) return;
       el.src = on ? hover : base;
+    }
+
+    function resetShakerPos() {
+      if (shaker) shaker.style.transform = "";
+      if (shakerWrap) shakerWrap.style.transform = "";
+    }
+
+    function moveShakerHold(clientX, clientY) {
+      if (!holdingShaker || !shaker) return;
+      const dx = clientX - holdOriginX;
+      const dy = clientY - holdOriginY;
+      const cx = Math.max(-28, Math.min(28, dx));
+      const cy = Math.max(-48, Math.min(48, dy));
+      shaker.style.transform = "translate(" + cx + "px," + cy + "px)";
     }
 
     function buildMenu() {
@@ -114,19 +135,71 @@
       bellBtn.classList.add("ring");
     }
 
+    function clearDrink() {
+      if (drinkEl && drinkEl.parentNode) drinkEl.parentNode.removeChild(drinkEl);
+      drinkEl = null;
+      drinkRecipe = null;
+      if (shaker) {
+        shaker.hidden = false;
+        shaker.classList.remove("holding");
+        setHover(shaker, false);
+      }
+      resetShakerPos();
+      updateTip();
+    }
+
+    function serveDrink() {
+      const recipe = drinkRecipe;
+      clearDrink();
+      if (recipe && opts.onServe) opts.onServe(recipe);
+    }
+
     function spawnDrink(recipe) {
-      if (!resultSlot) return;
-      resultSlot.innerHTML = "";
+      clearDrink();
+      if (!shakerWrap || !shaker) return;
+      shaker.hidden = true;
+      resetShakerPos();
       const img = document.createElement("img");
       img.src = recipe.src;
       img.alt = recipe.name;
       img.className = "craft-drink";
-      resultSlot.appendChild(img);
+      img.draggable = false;
+      img.title = "Drag up to serve";
+      shakerWrap.appendChild(img);
       drinkEl = img;
+      drinkRecipe = recipe;
+      updateTip();
+      if (tip) tip.classList.add("show");
       if (opts.onDrink) opts.onDrink(recipe);
+
+      img.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        startDrinkDrag(img, e);
+      });
+    }
+
+    function startDrinkDrag(img, e) {
+      const ghost = document.createElement("img");
+      ghost.className = "craft-ghost craft-ghost-drink";
+      ghost.src = img.src;
+      document.body.appendChild(ghost);
+      dragging = {
+        kind: "drink",
+        ghost: ghost,
+        srcEl: img,
+        startX: e.clientX,
+        startY: e.clientY,
+      };
+      img.classList.add("dragging");
+      moveGhost(e.clientX, e.clientY);
+      if (e.pointerId != null) img.setPointerCapture(e.pointerId);
     }
 
     function tryFinish() {
+      resetShakerPos();
+      setHover(shaker, false);
+      shaker.classList.remove("holding");
       const recipe = window.CherryDrinks.match(mix);
       if (!recipe) {
         if (opts.onFail) opts.onFail(mix);
@@ -144,18 +217,15 @@
       const prev = shakeYs[shakeYs.length - 2];
       const cur = shakeYs[shakeYs.length - 1];
       const dy = cur - prev;
-      if (Math.abs(dy) < 10) return;
+      if (Math.abs(dy) < 8) return;
       const dir = dy < 0 ? -1 : 1;
       if (shakeDir && dir !== shakeDir) {
         shakeCount += 1;
-        // up+down = 2 direction changes per cycle; need 3 cycles → 6 flips
         if (shakeCount >= 6) {
           shakeCount = 0;
           shakeDir = 0;
           shakeYs = [];
           holdingShaker = false;
-          setHover(shaker, false);
-          shaker.classList.remove("holding");
           tryFinish();
           return;
         }
@@ -164,6 +234,7 @@
     }
 
     function startDrag(kind, srcEl, e) {
+      if (drinkEl) return;
       e.preventDefault();
       const ghost = document.createElement("img");
       ghost.className = "craft-ghost";
@@ -186,9 +257,23 @@
       const kind = dragging.kind;
       const srcEl = dragging.srcEl;
       const ghost = dragging.ghost;
+      const startY = dragging.startY;
       dragging = null;
       if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost);
-      setHover(srcEl, false);
+      if (srcEl) {
+        srcEl.classList.remove("dragging");
+        setHover(srcEl, false);
+      }
+
+      if (kind === "drink") {
+        // Drag upward to serve — clears drink, restores shaker
+        if (startY != null && y < startY - 36) {
+          serveDrink();
+        }
+        return;
+      }
+
+      if (drinkEl || !shaker || shaker.hidden) return;
 
       const rect = shaker.getBoundingClientRect();
       const hit =
@@ -231,21 +316,23 @@
       });
     });
 
-    // Shaker hover + shake
+    // Shaker hover + hold + shake
     if (shaker) {
       shaker.addEventListener("pointerenter", () => {
-        if (!holdingShaker && !dragging) setHover(shaker, true);
+        if (!holdingShaker && !dragging && !drinkEl) setHover(shaker, true);
         if (tip) tip.classList.add("show");
       });
       shaker.addEventListener("pointerleave", () => {
         if (!holdingShaker && !dragging) setHover(shaker, false);
-        if (tip && !holdingShaker) tip.classList.remove("show");
+        if (tip && !holdingShaker && !drinkEl) tip.classList.remove("show");
       });
       shaker.addEventListener("pointerdown", (e) => {
         if (e.button !== 0) return;
-        if (dragging) return;
+        if (dragging || drinkEl || shaker.hidden) return;
         e.preventDefault();
         holdingShaker = true;
+        holdOriginX = e.clientX;
+        holdOriginY = e.clientY;
         shakeYs = [e.clientY];
         shakeDir = 0;
         shakeCount = 0;
@@ -253,9 +340,13 @@
         shaker.classList.add("holding");
         if (tip) tip.classList.add("show");
         shaker.setPointerCapture(e.pointerId);
+        moveShakerHold(e.clientX, e.clientY);
       });
       shaker.addEventListener("pointermove", (e) => {
-        if (holdingShaker) onShakeMove(e.clientY);
+        if (holdingShaker) {
+          moveShakerHold(e.clientX, e.clientY);
+          onShakeMove(e.clientY);
+        }
         if (dragging) moveGhost(e.clientX, e.clientY);
       });
       shaker.addEventListener("pointerup", () => {
@@ -266,14 +357,24 @@
           shakeCount = 0;
           setHover(shaker, false);
           shaker.classList.remove("holding");
-          if (tip) tip.classList.remove("show");
+          resetShakerPos();
+          if (tip && !drinkEl) tip.classList.remove("show");
         }
+      });
+      shaker.addEventListener("pointercancel", () => {
+        holdingShaker = false;
+        resetShakerPos();
+        shaker.classList.remove("holding");
+        setHover(shaker, false);
       });
     }
 
     window.addEventListener("pointermove", (e) => {
       if (dragging) moveGhost(e.clientX, e.clientY);
-      if (holdingShaker) onShakeMove(e.clientY);
+      if (holdingShaker) {
+        moveShakerHold(e.clientX, e.clientY);
+        onShakeMove(e.clientY);
+      }
     });
     window.addEventListener("pointerup", (e) => {
       if (dragging) endDrag(e.clientX, e.clientY);
@@ -284,7 +385,8 @@
         shakeCount = 0;
         setHover(shaker, false);
         shaker.classList.remove("holding");
-        if (tip) tip.classList.remove("show");
+        resetShakerPos();
+        if (tip && !drinkEl) tip.classList.remove("show");
       }
     });
 
@@ -305,6 +407,7 @@
     return {
       resetMix: resetMix,
       toggleMenu: toggleMenu,
+      clearDrink: clearDrink,
       getMix: () => Object.assign({}, mix),
     };
   }

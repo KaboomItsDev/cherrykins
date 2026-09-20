@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=16" />
+    <link rel="stylesheet" href="css/style.css?v=17" />
   </head>
   <body class="player-page">
     <div id="join-gate" class="landing">
@@ -19,7 +19,7 @@
           <img src="assets/ui/cherrykinslogo.png" alt="Cherry Kins" />
         </div>
         <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v16</p>
+        <p class="hint" style="margin-bottom: 0.75rem">build v17</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -48,7 +48,10 @@
         </header>
 
         <aside class="side">
-          <div class="guest-name" id="mug-name"></div>
+          <div class="errors-panel">
+            <div class="errors-label">Errors</div>
+            <div class="errors-box" id="errors-log"></div>
+          </div>
           <div class="hearts" id="hearts" aria-label="Hearts"></div>
           <div class="tix-wrap">
             <div class="tix-label">Tix</div>
@@ -125,7 +128,6 @@
                   <img src="assets/ingredients/Karmotrine.png" alt="Karmotrine" draggable="false" />
                 </button>
               </div>
-              <div class="craft-result" id="craft-result"></div>
             </div>
 
             <!-- Menu pull-up -->
@@ -144,10 +146,10 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=16"></script>
-    <script src="js/sync.js?v=16"></script>
-    <script src="js/bystanders.js?v=16"></script>
-    <script src="js/craft.js?v=16"></script>
-    <script src="js/player.js?v=16"></script>
+    <script src="js/recipes.js?v=17"></script>
+    <script src="js/sync.js?v=17"></script>
+    <script src="js/bystanders.js?v=17"></script>
+    <script src="js/craft.js?v=17"></script>
+    <script src="js/player.js?v=17"></script>
   </body>
 </html>
