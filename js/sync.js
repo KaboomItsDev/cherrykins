@@ -12,6 +12,8 @@
     tixPopup: null,
     clock: "0X:XX",
     mix: [],
+    playerConnectedName: "",
+    warning: null,
   };
 
   const BROKERS = [
@@ -146,7 +148,16 @@
     }
 
     function sendHello() {
-      publish(topicHello, { _type: "hello", from: "player", t: Date.now() }, false);
+      publish(
+        topicHello,
+        {
+          _type: "hello",
+          from: "player",
+          playerName: (opts && opts.playerName) || "",
+          t: Date.now(),
+        },
+        false
+      );
     }
 
     function setState(partial) {
@@ -175,6 +186,9 @@
       lastPeerAt = Date.now();
 
       if (msg._type === "hello" && role === "admin") {
+        const patch = {};
+        if (msg.playerName) patch.playerConnectedName = String(msg.playerName).slice(0, 24);
+        if (Object.keys(patch).length) applyLocal(patch);
         setStatus("connected");
         broadcastState();
         return;
@@ -214,8 +228,8 @@
         code = roomCode();
       }
 
-      topicState = "cherrykins/v5/" + code + "/state";
-      topicHello = "cherrykins/v5/" + code + "/hello";
+      topicState = "cherrykins/v6/" + code + "/state";
+      topicHello = "cherrykins/v6/" + code + "/hello";
 
       setStatus("connecting");
       emit("code", code);

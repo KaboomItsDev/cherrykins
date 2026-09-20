@@ -10,16 +10,32 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=19" />
+    <link rel="stylesheet" href="css/style.css?v=19.01" />
   </head>
   <body>
     <div class="admin">
       <aside class="admin-rail">
-        <h1>Admin Panel <span style="color:var(--muted);font-size:0.7rem">v19</span></h1>
+        <h1>Admin Panel <span style="color:var(--muted);font-size:0.7rem">v19.01</span></h1>
         <div class="room-box">
           <div class="meta">Sync code — Player types this (4 letters)</div>
           <div class="code" id="room-code">····</div>
           <div class="meta" id="room-status">Starting…</div>
+          <div class="meta player-connected" id="player-connected">Player: —</div>
+        </div>
+
+        <div>
+          <h2>Warning</h2>
+          <div class="field">
+            <textarea
+              id="warning-text"
+              rows="3"
+              maxlength="200"
+              placeholder="Write a warning for the player…"
+            ></textarea>
+          </div>
+          <button class="btn primary" id="warning-send" type="button" style="margin-top:0.4rem;width:100%">
+            Send warning
+          </button>
         </div>
 
         <div>
@@ -74,6 +90,7 @@
         </div>
 
         <p class="hint"><a href="index.html">← Home</a> · Keys 1–6 expr · I in · O out</p>
+        <p class="credit">coded by disorderdev</p>
       </aside>
 
       <main class="admin-main">
@@ -110,9 +127,9 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=19"></script>
-    <script src="js/sync.js?v=19"></script>
-    <script src="js/bystanders.js?v=19"></script>
-    <script src="js/admin.js?v=19"></script>
+    <script src="js/recipes.js?v=19.01"></script>
+    <script src="js/sync.js?v=19.01"></script>
+    <script src="js/bystanders.js?v=19.01"></script>
+    <script src="js/admin.js?v=19.01"></script>
   </body>
 </html>

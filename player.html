@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=19" />
+    <link rel="stylesheet" href="css/style.css?v=19.01" />
   </head>
   <body class="player-page">
     <div id="join-gate" class="landing">
@@ -18,8 +18,11 @@
         <div class="landing-logo">
           <img src="assets/ui/cherrykinslogo.png" alt="Cherry Kins" />
         </div>
-        <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v19</p>
+        <p class="landing-sub">
+          Hey <strong id="join-player-label">player</strong> — enter the
+          <strong>4-letter sync code</strong> from Admin
+        </p>
+        <p class="hint" style="margin-bottom: 0.75rem">v19.01</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -35,6 +38,7 @@
         </div>
         <p class="hint" id="join-error"></p>
         <p class="hint"><a href="index.html">← Back</a></p>
+        <p class="credit">coded by disorderdev</p>
       </div>
     </div>
 
@@ -141,15 +145,23 @@
       </div>
     </div>
 
+    <div id="warning-modal" class="warning-modal" hidden>
+      <div class="warning-card">
+        <div class="warning-title">Warning</div>
+        <p class="warning-body" id="warning-body"></p>
+        <button type="button" class="btn primary" id="warning-ok">OK</button>
+      </div>
+    </div>
+
     <script>
       if (sessionStorage.getItem("cherrykins_role") !== "player") {
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=19"></script>
-    <script src="js/sync.js?v=19"></script>
-    <script src="js/bystanders.js?v=19"></script>
-    <script src="js/craft.js?v=19"></script>
-    <script src="js/player.js?v=19"></script>
+    <script src="js/recipes.js?v=19.01"></script>
+    <script src="js/sync.js?v=19.01"></script>
+    <script src="js/bystanders.js?v=19.01"></script>
+    <script src="js/craft.js?v=19.01"></script>
+    <script src="js/player.js?v=19.01"></script>
   </body>
 </html>

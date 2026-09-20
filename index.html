@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=19" />
+    <link rel="stylesheet" href="css/style.css?v=19.01" />
   </head>
   <body>
     <main class="landing">
@@ -18,14 +18,15 @@
         <div class="landing-logo">
           <img src="assets/ui/cherrykinslogo.png" alt="Cherry Kins" />
         </div>
-        <p class="landing-sub">Enter your access code</p>
-        <p class="hint" style="margin-bottom: 1rem">build v19</p>
+        <p class="landing-sub">Enter your name to play</p>
+        <p class="hint" style="margin-bottom: 1rem">v19.01</p>
 
         <form class="access-form" id="access-form" autocomplete="off">
           <input
             id="access-code"
             type="text"
-            placeholder="access code"
+            placeholder="your name"
+            maxlength="24"
             spellcheck="false"
             autocapitalize="off"
             autocomplete="off"
@@ -34,22 +35,14 @@
           />
           <button type="submit">Enter</button>
         </form>
-        <p class="hint access-error" id="access-error" hidden>Wrong code.</p>
+        <p class="hint access-error" id="access-error" hidden>Enter a name.</p>
+        <p class="credit">coded by disorderdev</p>
       </div>
     </main>
 
     <script>
       (function () {
-        var CODES = {
-          falacias: "player.html",
-          hiperboles: "admin.html",
-        };
-        var ROLES = {
-          falacias: "player",
-          hiperboles: "admin",
-        };
-
-        function clean(value) {
+        function adminKey(value) {
           try {
             return String(value || "")
               .trim()
@@ -65,21 +58,35 @@
           }
         }
 
+        function displayName(value) {
+          return String(value || "")
+            .trim()
+            .replace(/\s+/g, " ")
+            .slice(0, 24);
+        }
+
         var form = document.getElementById("access-form");
         var input = document.getElementById("access-code");
         var error = document.getElementById("access-error");
 
         form.addEventListener("submit", function (e) {
           e.preventDefault();
-          var key = clean(input.value);
-          if (!CODES[key]) {
+          var name = displayName(input.value);
+          if (!name) {
             error.hidden = false;
-            error.textContent = "Wrong code.";
-            input.select();
+            error.textContent = "Enter a name.";
+            input.focus();
             return;
           }
-          sessionStorage.setItem("cherrykins_role", ROLES[key]);
-          location.href = CODES[key];
+          if (adminKey(name) === "hiperboles") {
+            sessionStorage.setItem("cherrykins_role", "admin");
+            sessionStorage.removeItem("cherrykins_player_name");
+            location.href = "admin.html";
+            return;
+          }
+          sessionStorage.setItem("cherrykins_role", "player");
+          sessionStorage.setItem("cherrykins_player_name", name);
+          location.href = "player.html";
         });
 
         input.addEventListener("input", function () {

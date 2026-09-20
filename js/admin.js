@@ -1,6 +1,9 @@
 (function () {
   const roomCodeEl = document.getElementById("room-code");
   const roomStatus = document.getElementById("room-status");
+  const playerConnectedEl = document.getElementById("player-connected");
+  const warningText = document.getElementById("warning-text");
+  const warningSend = document.getElementById("warning-send");
   const charPick = document.getElementById("char-pick");
   const exprGrid = document.getElementById("expr-grid");
   const btnEnter = document.getElementById("btn-enter");
@@ -55,6 +58,13 @@
       idle: "Idle",
     };
     return map[s] || s;
+  }
+
+  function renderPlayerConnected(state) {
+    if (!playerConnectedEl) return;
+    const name = (state && state.playerConnectedName) || "";
+    playerConnectedEl.textContent = name ? "Player: " + name : "Player: —";
+    playerConnectedEl.classList.toggle("online", !!name);
   }
 
   function selectedChar() {
@@ -205,14 +215,39 @@
 
   sync.on((type, detail) => {
     if (type === "code") roomCodeEl.textContent = detail;
-    if (type === "status") roomStatus.textContent = statusLabel(detail);
+    if (type === "status") {
+      roomStatus.textContent = statusLabel(detail);
+      if (
+        (detail === "waiting" || detail === "disconnected") &&
+        sync.getState().playerConnectedName
+      ) {
+        push({ playerConnectedName: "" });
+      }
+    }
     if (type === "error") roomStatus.textContent = String(detail);
     if (type === "state") {
       renderExprs();
       renderPreview(detail);
       syncHeartsTixInputs();
+      renderPlayerConnected(detail);
     }
   });
+
+  if (warningSend) {
+    warningSend.addEventListener("click", () => {
+      const text = String(warningText && warningText.value ? warningText.value : "")
+        .trim()
+        .slice(0, 200);
+      if (!text) {
+        if (warningText) warningText.focus();
+        return;
+      }
+      push({
+        warning: { id: Date.now(), text: text },
+      });
+      if (warningText) warningText.value = "";
+    });
+  }
 
   btnEnter.addEventListener("click", () => {
     const char = selectedChar();

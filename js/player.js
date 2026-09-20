@@ -5,6 +5,10 @@
   const joinInput = document.getElementById("join-code");
   const joinBtn = document.getElementById("join-btn");
   const joinError = document.getElementById("join-error");
+  const joinPlayerLabel = document.getElementById("join-player-label");
+  const warningModal = document.getElementById("warning-modal");
+  const warningBody = document.getElementById("warning-body");
+  const warningOk = document.getElementById("warning-ok");
   const clockEl = document.getElementById("clock");
   const heartsEl = document.getElementById("hearts");
   const tixEl = document.getElementById("tix");
@@ -24,6 +28,11 @@
   let wasVisible = false;
   let lastHearts = 3;
   let lastPopupId = null;
+  let lastWarningId = null;
+
+  const playerName =
+    sessionStorage.getItem("cherrykins_player_name") || "player";
+  if (joinPlayerLabel) joinPlayerLabel.textContent = playerName;
 
   const HEART_LOSE_SRC = "assets/ui/heart-lose.wav";
   const MONEY_CHING_SRC = "assets/ui/money-ching.wav";
@@ -153,6 +162,22 @@
     lastCharId = state.characterId;
   }
 
+  function showWarning(warning) {
+    if (!warningModal || !warning || !warning.text) return;
+    if (warning.id && warning.id === lastWarningId) return;
+    lastWarningId = warning.id || Date.now();
+    if (warningBody) warningBody.textContent = warning.text;
+    warningModal.hidden = false;
+  }
+
+  function hideWarning() {
+    if (warningModal) warningModal.hidden = true;
+  }
+
+  if (warningOk) {
+    warningOk.addEventListener("click", hideWarning);
+  }
+
   function applyState(state) {
     if (!state) return;
     clockEl.textContent = state.clock || "0X:XX";
@@ -170,6 +195,9 @@
     ) {
       lastPopupId = state.tixPopup.id;
       showTixFloat(state.tixPopup.amount);
+    }
+    if (state.warning && state.warning.text) {
+      showWarning(state.warning);
     }
   }
 
@@ -238,7 +266,10 @@
     joinBtn.disabled = true;
     let entered = false;
 
-    sync = window.CherrySync.createSync("player", { code: clean });
+    sync = window.CherrySync.createSync("player", {
+      code: clean,
+      playerName: playerName,
+    });
     sync.on((type, detail) => {
       if ((type === "status" && detail === "connected") || type === "state") {
         if (!entered) {
@@ -249,6 +280,10 @@
           }
           joinError.textContent = "";
           showGame();
+          // Announce name to admin once in-game
+          try {
+            sync.setState({ playerConnectedName: playerName });
+          } catch (_) {}
         }
         if (type === "state") applyState(detail);
       }
