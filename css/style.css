@@ -1,13 +1,13 @@
 :root {
-  --bg-deep: #1a1520;
+  --bg-deep: #000000;
   --stage: #2a3048;
   --stage-crowd: #1e2438;
   --bar: #6a4028;
   --bar-edge: #7a5030;
   --station: #2e2e36;
   --station-edge: #1c1c22;
-  --panel: #221c28;
-  --panel-line: #5a5060;
+  --panel: #0a0a0a;
+  --panel-line: #3a3a3a;
   --pink: #d06090;
   --pink-dim: #904060;
   --cyan: #70a0a8;
@@ -65,39 +65,19 @@ a {
   text-align: center;
   border: 2px solid var(--panel-line);
   padding: 1.5rem 1.25rem;
-  background: var(--panel);
+  background: #0a0a0a;
 }
 
 .landing-logo {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 7vw, 3.2rem);
-  color: var(--pink);
-  letter-spacing: 0.04em;
-  margin-bottom: 0.35rem;
-  line-height: 1;
+  margin-bottom: 0.5rem;
+  line-height: 0;
 }
 
-.landing-logo .cherry {
-  display: inline-block;
-  width: 0.55em;
-  height: 0.55em;
-  margin-left: 0.25rem;
-  vertical-align: 0.05em;
-  background: var(--pink);
-  border: 2px solid var(--pink-dim);
-  transform: rotate(-45deg);
-  position: relative;
-}
-
-.landing-logo .cherry::after {
-  content: "";
-  position: absolute;
-  width: 35%;
-  height: 45%;
-  top: -25%;
-  right: 5%;
-  background: #608050;
-  transform: rotate(40deg);
+.landing-logo img {
+  width: min(280px, 85%);
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .landing-sub {
@@ -187,12 +167,12 @@ a {
 /* ——— Player shell ——— */
 body.player-page {
   overflow: auto;
-  background: #08060a;
+  background: #000;
 }
 
 body.player-page.in-game {
   overflow: hidden;
-  background: #08060a;
+  background: #000;
   display: grid;
   place-items: center;
 }
@@ -201,8 +181,8 @@ body.player-page.in-game {
   display: none;
   width: min(920px, 90vw);
   height: min(640px, 86vh);
-  background: var(--bg-deep);
-  border: 3px solid #2a2430;
+  background: #000;
+  border: 3px solid #222;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -224,7 +204,7 @@ body.player-page.in-game .game-frame #game {
   height: 100%;
   display: grid;
   grid-template-rows: auto 1fr;
-  grid-template-columns: 112px 1fr;
+  grid-template-columns: 88px 1fr;
   grid-template-areas:
     "header header"
     "side stage";
@@ -244,40 +224,21 @@ body.player-page.in-game #join-gate {
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 48px;
+  height: 52px;
   border-bottom: 2px solid var(--panel-line);
-  background: #18141c;
+  background: #000;
 }
 
 .brand {
-  font-family: var(--font-display);
-  font-size: 1.85rem;
-  color: var(--pink);
-  letter-spacing: 0.06em;
-  line-height: 1;
+  line-height: 0;
 }
 
-.brand .cherry {
-  display: inline-block;
-  width: 0.7em;
-  height: 0.7em;
-  margin-left: 0.3rem;
-  vertical-align: -0.05em;
-  background: var(--pink);
-  border: 2px solid var(--pink-dim);
-  transform: rotate(-45deg);
-  position: relative;
-}
-
-.brand .cherry::after {
-  content: "";
-  position: absolute;
-  width: 35%;
-  height: 45%;
-  top: -25%;
-  right: 5%;
-  background: #608050;
-  transform: rotate(40deg);
+.brand img {
+  height: 36px;
+  width: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
 }
 
 .clock {
@@ -286,7 +247,7 @@ body.player-page.in-game #join-gate {
   top: 50%;
   transform: translateY(-50%);
   border: 2px solid var(--pink-dim);
-  background: #140f18;
+  background: #000;
   color: var(--text);
   padding: 0.15rem 0.5rem;
   font-family: var(--font-display);
@@ -297,12 +258,21 @@ body.player-page.in-game #join-gate {
 /* Sidebar */
 .side {
   grid-area: side;
-  background: var(--panel);
+  background: #000;
   border-right: 2px solid var(--panel-line);
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
   padding: 0.55rem;
+}
+
+.guest-name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--pink);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  min-height: 1.2em;
 }
 
 .mugshot-wrap {
@@ -588,57 +558,50 @@ body.player-page.in-game #join-gate {
 
 .character {
   position: absolute;
-  left: 50%;
-  bottom: 28%;
-  width: min(180px, 36%);
-  height: 48%;
-  transform: translateX(120vw);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateX(110%);
   transition: transform 0.85s ease-in-out;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
   z-index: 9;
+  pointer-events: none;
 }
 
 .character.in {
-  transform: translateX(-50%);
+  transform: translateX(0);
 }
 
 .character .body {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: end center;
-  position: relative;
+  position: absolute;
+  inset: 0;
   transform-origin: bottom center;
 }
 
 .character .body img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: auto;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  display: block;
 }
 
-/* Chip / Stampni already fit behind the counter */
+/* Chip / Stampni (214×99) — sit on the counter line */
 .character.fit-counter .body img {
-  max-height: 100%;
-  width: auto;
+  bottom: 39%;
 }
 
-/* Taller patrons (214×200) — shrink to sit behind the bar like Chip */
-.character.fit-tall {
-  transform-origin: bottom center;
-}
-.character.fit-tall.in {
-  transform: translateX(-50%) scale(0.5);
-}
-.character.fit-tall:not(.in) {
-  transform: translateX(120vw) scale(0.5);
+/* Taller patrons (214×200) — full-frame overlay behind the bar */
+.character.fit-tall .body img {
+  bottom: 0;
 }
 
 .placeholder-char.missing-expr {
+  position: absolute;
+  left: 30%;
+  bottom: 40%;
   width: 40%;
   height: 40%;
   border: none;
@@ -706,11 +669,11 @@ body.player-page.in-game #join-gate {
   }
 }
 
-/* Ice sits in the snowflake bin (left slot on undertable) */
+/* Ice sits low in the snowflake bin */
 .craft-ice {
   position: absolute;
   left: 18%;
-  bottom: 46%;
+  bottom: 28%;
   width: 9%;
   height: auto;
   pointer-events: auto;
@@ -757,7 +720,7 @@ body.player-page.in-game #join-gate {
   transform: translateX(-50%);
   min-width: 90px;
   padding: 0.25rem 0.4rem;
-  background: #140f18;
+  background: #000;
   border: 1px solid var(--panel-line);
   font-size: 0.55rem;
   color: var(--text);
@@ -772,23 +735,23 @@ body.player-page.in-game #join-gate {
   opacity: 1;
 }
 
-/* Ingredient bottles along the undertable shelf */
+/* Ingredient bottles — right shelf slot */
 .craft-bottles {
   position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: 6%;
+  left: 62%;
+  right: 3%;
+  bottom: 10%;
   display: flex;
-  gap: 2.5%;
+  gap: 3%;
   align-items: flex-end;
-  justify-content: center;
+  justify-content: flex-end;
   pointer-events: auto;
   z-index: 14;
 }
 
 .craft-bottle {
-  width: 14%;
-  max-width: 26px;
+  width: 18%;
+  max-width: 28px;
   background: none;
   border: none;
   padding: 0;
@@ -1339,7 +1302,7 @@ body.player-page.in-game #join-gate {
 }
 
 .admin-preview .character {
-  width: min(220px, 36%);
+  /* full-stage sprites — same as player */
 }
 
 .admin .expr-grid {

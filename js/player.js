@@ -9,8 +9,6 @@
   const heartsEl = document.getElementById("hearts");
   const tixEl = document.getElementById("tix");
   const tixFloat = document.getElementById("tix-float");
-  const mugPlaceholder = document.getElementById("mug-placeholder");
-  const mugImg = document.getElementById("mug-img");
   const mugName = document.getElementById("mug-name");
   const character = document.getElementById("character");
   const characterBody = document.getElementById("character-body");
@@ -99,32 +97,6 @@
     }
   }
 
-  function setMug(char, expr) {
-    const mugPath = char.mug;
-    // Prefer dedicated mugshot if it loads; else use expression / body crop via expression src
-    const trySrc = mugPath || (expr && expr.src) || "";
-    if (!trySrc) {
-      mugImg.hidden = true;
-      mugPlaceholder.hidden = false;
-      mugPlaceholder.style.background = char.color;
-      return;
-    }
-    mugImg.onload = function () {
-      mugImg.hidden = false;
-      mugPlaceholder.hidden = true;
-    };
-    mugImg.onerror = function () {
-      if (expr && expr.src && mugImg.src.indexOf(expr.src) === -1) {
-        mugImg.src = expr.src;
-        return;
-      }
-      mugImg.hidden = true;
-      mugPlaceholder.hidden = false;
-      mugPlaceholder.style.background = char.color;
-    };
-    mugImg.src = trySrc;
-  }
-
   function renderCharacter(state) {
     const char = findChar(state.characterId);
     const expr = findExpr(char, state.expressionId);
@@ -145,7 +117,7 @@
       wasVisible = false;
       lastExprId = null;
       lastCharId = null;
-      mugName.textContent = "";
+      if (mugName) mugName.textContent = "";
       return;
     }
 
@@ -155,15 +127,13 @@
       img.alt = char.name + " — " + (expr.label || "");
       characterBody.appendChild(img);
     } else {
-      // Missing expression art (e.g. Stampni annoyed) — empty slot
       const ph = document.createElement("div");
       ph.className = "placeholder-char missing-expr";
       ph.style.background = "transparent";
       characterBody.appendChild(ph);
     }
 
-    setMug(char, expr);
-    mugName.textContent = state.characterName || char.name || "";
+    if (mugName) mugName.textContent = state.characterName || char.name || "";
 
     if (exprChanged && visible && expr && expr.src) {
       playExprAnim(state.expressionId);
