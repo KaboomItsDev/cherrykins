@@ -630,13 +630,13 @@ body.player-page.in-game #join-gate {
 }
 
 /*
- * Tall patrons (214×200) — match Chip’s on-screen footprint.
- * Full-frame sprites were only showing heads above the bar.
+ * Tall patrons — larger than before, kept high.
+ * Table top ≈ 53.5% from stage bottom; bottom: 51% tucks just under it.
  */
 .character.fit-tall .body img {
-  left: 32%;
-  width: 36%;
-  bottom: 46%;
+  left: 25%;
+  width: 50%;
+  bottom: 51%;
 }
 
 .placeholder-char.missing-expr {

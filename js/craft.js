@@ -27,6 +27,26 @@
     const menuList = stage.querySelector("#menu-recipe-list");
     const bottles = stage.querySelectorAll(".craft-bottle");
 
+    let bellAudio = null;
+    let shakerAudio = null;
+    try {
+      bellAudio = new Audio("assets/ui/bell.mp3");
+      bellAudio.preload = "auto";
+    } catch (_) {}
+    try {
+      shakerAudio = new Audio("assets/ui/shaker.mp3");
+      shakerAudio.preload = "auto";
+    } catch (_) {}
+
+    function playSfx(audio) {
+      if (!audio) return;
+      try {
+        audio.currentTime = 0;
+        const p = audio.play();
+        if (p && typeof p.catch === "function") p.catch(function () {});
+      } catch (_) {}
+    }
+
     function resetMix() {
       const empty = window.CherryDrinks.emptyMix();
       Object.keys(empty).forEach((k) => {
@@ -130,6 +150,7 @@
 
     function ringBell() {
       if (!bellBtn) return;
+      playSfx(bellAudio);
       bellBtn.classList.remove("ring");
       void bellBtn.offsetWidth;
       bellBtn.classList.add("ring");
@@ -200,6 +221,7 @@
       resetShakerPos();
       setHover(shaker, false);
       shaker.classList.remove("holding");
+      playSfx(shakerAudio);
       const recipe = window.CherryDrinks.match(mix);
       if (!recipe) {
         if (opts.onFail) opts.onFail(mix);
