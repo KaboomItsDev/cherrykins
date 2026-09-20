@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=9" />
+    <link rel="stylesheet" href="css/style.css?v=10" />
   </head>
   <body class="player-page">
     <div id="join-gate" class="landing">
       <div class="landing-card">
         <div class="landing-logo">Cherry Kins</div>
         <p class="landing-sub">Enter the <strong>4-letter sync code</strong> from Admin</p>
-        <p class="hint" style="margin-bottom: 0.75rem">build v9</p>
+        <p class="hint" style="margin-bottom: 0.75rem">build v10</p>
         <div class="join-row">
           <input
             id="join-code"
@@ -63,7 +63,17 @@
 
       <div class="stage-wrap">
         <div class="stage">
-          <div class="crowd" aria-hidden="true"></div>
+          <div class="scene" aria-hidden="true">
+            <img class="scene-layer layer-rootbg" src="assets/ui/rootbg.png" alt="" width="214" height="140" />
+            <img class="scene-layer layer-floor" src="assets/ui/floor.png" alt="" />
+            <img class="scene-layer layer-bgtables" src="assets/ui/bgtables.png" alt="" />
+            <img class="scene-layer layer-spotlights" src="assets/ui/spotlights.png" alt="" />
+            <img class="scene-layer layer-light light-a" src="assets/ui/light01.png" alt="" />
+            <img class="scene-layer layer-light light-b" src="assets/ui/light02.png" alt="" />
+            <img class="scene-layer layer-balconyseats" src="assets/ui/balconyseats.png" alt="" />
+            <img class="scene-layer layer-undertable" src="assets/ui/undertable.png" alt="" />
+            <img class="scene-layer layer-table" src="assets/ui/table.png" alt="" />
+          </div>
           <div class="character" id="character">
             <div class="body" id="character-body"></div>
           </div>
@@ -120,8 +130,8 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=9"></script>
-    <script src="js/sync.js?v=9"></script>
-    <script src="js/player.js?v=9"></script>
+    <script src="js/recipes.js?v=10"></script>
+    <script src="js/sync.js?v=10"></script>
+    <script src="js/player.js?v=10"></script>
   </body>
 </html>

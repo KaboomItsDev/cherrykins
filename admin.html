@@ -10,12 +10,12 @@
       href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=9" />
+    <link rel="stylesheet" href="css/style.css?v=10" />
   </head>
   <body>
     <div class="admin">
       <aside class="admin-rail">
-        <h1>Admin Panel <span style="color:var(--muted);font-size:0.7rem">v9</span></h1>
+        <h1>Admin Panel <span style="color:var(--muted);font-size:0.7rem">v10</span></h1>
         <div class="room-box">
           <div class="meta">Sync code — Player types this (4 letters)</div>
           <div class="code" id="room-code">····</div>
@@ -79,8 +79,18 @@
       <main class="admin-main">
         <h2>Live player view</h2>
         <div class="admin-preview" id="admin-preview">
-          <div class="preview-stage">
-            <div class="crowd" aria-hidden="true"></div>
+          <div class="preview-stage stage">
+            <div class="scene" aria-hidden="true">
+              <img class="scene-layer layer-rootbg" src="assets/ui/rootbg.png" alt="" width="214" height="140" />
+              <img class="scene-layer layer-floor" src="assets/ui/floor.png" alt="" />
+              <img class="scene-layer layer-bgtables" src="assets/ui/bgtables.png" alt="" />
+              <img class="scene-layer layer-spotlights" src="assets/ui/spotlights.png" alt="" />
+              <img class="scene-layer layer-light light-a" src="assets/ui/light01.png" alt="" />
+              <img class="scene-layer layer-light light-b" src="assets/ui/light02.png" alt="" />
+              <img class="scene-layer layer-balconyseats" src="assets/ui/balconyseats.png" alt="" />
+              <img class="scene-layer layer-undertable" src="assets/ui/undertable.png" alt="" />
+              <img class="scene-layer layer-table" src="assets/ui/table.png" alt="" />
+            </div>
             <div class="character" id="preview-character">
               <div class="body" id="preview-body"></div>
             </div>
@@ -98,8 +108,8 @@
         location.replace("index.html");
       }
     </script>
-    <script src="js/recipes.js?v=9"></script>
-    <script src="js/sync.js?v=9"></script>
-    <script src="js/admin.js?v=9"></script>
+    <script src="js/recipes.js?v=10"></script>
+    <script src="js/sync.js?v=10"></script>
+    <script src="js/admin.js?v=10"></script>
   </body>
 </html>
