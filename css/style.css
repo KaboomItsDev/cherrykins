@@ -452,7 +452,7 @@ body.player-page.in-game #join-gate {
   display: none;
 }
 
-/* Stage — pixel scene locked to 214×140; every layer fills that frame */
+/* Stage — pixel scene 214×202; all layers identical size, stacked 1:1 */
 .stage-wrap {
   grid-area: stage;
   position: relative;
@@ -469,9 +469,9 @@ body.player-page.in-game #join-gate {
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
-  width: min(100cqw, calc(100cqh * 214 / 140));
-  height: min(100cqh, calc(100cqw * 140 / 214));
-  aspect-ratio: 214 / 140;
+  width: min(100cqw, calc(100cqh * 214 / 202));
+  height: min(100cqh, calc(100cqw * 202 / 214));
+  aspect-ratio: 214 / 202;
   background: transparent;
 }
 
@@ -488,7 +488,6 @@ body.player-page.in-game #join-gate {
   height: 100%;
   margin: 0;
   object-fit: fill;
-  object-position: center center;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   pointer-events: none;
@@ -506,13 +505,11 @@ body.player-page.in-game #join-gate {
 }
 .layer-spotlights {
   z-index: 4;
-  object-position: top center;
 }
 .layer-light {
   z-index: 5;
   opacity: 0.32;
   mix-blend-mode: screen;
-  object-position: top center;
 }
 .light-a {
   z-index: 5;
@@ -528,7 +525,6 @@ body.player-page.in-game #join-gate {
 }
 .layer-undertable {
   z-index: 9;
-  object-position: bottom center;
 }
 .layer-table {
   z-index: 10;
@@ -567,9 +563,9 @@ body.player-page.in-game #join-gate {
 .character {
   position: absolute;
   left: 50%;
-  bottom: 22%;
-  width: min(200px, 38%);
-  height: 58%;
+  bottom: 28%;
+  width: min(180px, 36%);
+  height: 48%;
   transform: translateX(120vw);
   transition: transform 0.85s ease-in-out;
   display: flex;
@@ -989,9 +985,9 @@ body.player-page.in-game #join-gate {
 }
 
 .preview-stage .stage {
-  width: min(100cqw, calc(100cqh * 214 / 140));
-  height: min(100cqh, calc(100cqw * 140 / 214));
-  aspect-ratio: 214 / 140;
+  width: min(100cqw, calc(100cqh * 214 / 202));
+  height: min(100cqh, calc(100cqw * 202 / 214));
+  aspect-ratio: 214 / 202;
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
